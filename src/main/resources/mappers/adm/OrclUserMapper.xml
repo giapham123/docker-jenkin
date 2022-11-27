@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.adm.mappers.OrclUserMapper">
+    <resultMap id="OracleUserMap" type="User">
+        <result column="usr_pwd" property="usrPwd"></result>
+        <result column="usr_nm" property="usrNm"></result>
+    </resultMap>
+
+    <select id="findAllUserSlave" resultMap="OracleUserMap">
+        select usr_pwd, usr_nm from ADM_USR where cre_usr_id = 'jungkim'
+    </select>
+
+</mapper>

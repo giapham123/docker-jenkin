@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.WriteOffMapper">
+    <select id="getWriteOffData"  resultType="WriteOffModel" parameterType="WriteOffModel">
+        SELECT
+        line_number no,
+        agreementid          agreementid,
+        agreementno          agreementno,
+        outdate              outdate,
+        amtfin               amtfin,
+        principle_bf         principlebf,
+        interest_bf          interestbf,
+        lpp_bf               lppbf,
+        principle_at         principleat,
+        interest_at          interestat,
+        lpp_at               lppat,
+        total_principle      totalprinciple,
+        total_interest       totalinterest,
+        total_lpp            totallpp,
+        total_net_receivable totalnetreceivable,
+        insertdt             insertdt,
+        PAID paid,
+        WAIVEOFF_AMT waiveoffAmt,
+        TOTAL_EXCESS totalExcess
+        FROM
+        (
+        SELECT
+        a.agreementid,
+        a.agreementno,
+        to_char(a.out_date, 'MM/DD/YYYY')    outdate,
+        a.amtfin,
+        a.principle_bf,
+        a.interest_bf,
+        a.lpp_bf,
+        a.principle_at,
+        a.interest_at,
+        a.lpp_at,
+        a.total_principle,
+        a.total_interest,
+        a.total_lpp,
+        a.total_net_receivable,
+        to_char(a.insert_date, 'MM/DD/YYYY') insertdt,
+        PAID,
+        WAIVEOFF_AMT,
+        TOTAL_EXCESS,
+        ROW_NUMBER()
+        OVER(
+        ORDER BY
+        insert_date DESC
+        )                                    line_number
+        FROM
+        sqlserver1.writeoff_ext_info a where 1=1
+        <if test="agreementId != null and agreementId != ''">
+            AND a.agreementid = #{agreementId}
+        </if>
+        )
+        WHERE
+        line_number BETWEEN 10 * ( #{page} - 1 ) + 1 AND 10 * #{page}
+    </select>
+
+    <select id="countAllDataWriteOff"  resultType="int"  parameterType="WriteOffModel">
+        select count(*) from sqlserver1.writeoff_ext_info a where 1=1
+        <if test="agreementId != null and agreementId != ''">
+            AND a.agreementid = #{agreementId}
+        </if>
+    </select>
+
+    <select id="getWriteOffDataForExport"  resultType="WriteOffModel" parameterType="WriteOffModel">
+        SELECT
+        a.agreementid          agreementid,
+        a.agreementno          agreementno,
+        to_char(a.out_date  , 'MM/DD/YYYY')           outdate,
+        a.amtfin               amtfin,
+        a.principle_bf         principlebf,
+        a.interest_bf          interestbf,
+        a.lpp_bf               lppbf,
+        a.principle_at         principleat,
+        a.interest_at          interestat,
+        a.lpp_at               lppat,
+        a.total_principle      totalprinciple,
+        a.total_interest       totalinterest,
+        a.total_lpp            totallpp,
+        a.total_net_receivable totalnetreceivable,
+        to_char(a.insert_date  , 'MM/DD/YYYY')           insertdt,
+        PAID paid,
+        WAIVEOFF_AMT waiveoffAmt,
+        TOTAL_EXCESS totalExcess
+        FROM
+        sqlserver1.writeoff_ext_info a where 1=1
+        <if test="agreementId != null and agreementId != ''">
+            AND a.agreementid = #{agreementId}
+        </if>
+        ORDER BY
+        a.insert_date DESC
+    </select>
+</mapper>

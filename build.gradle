@@ -1,0 +1,106 @@
+buildscript {
+    ext {
+        appVersion = '1.0'
+        warPackageName = "ROOT.war"
+        springBootVersion = '1.5.7.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2')
+    compile('org.springframework.boot:spring-boot-starter-mail')
+    compile('org.springframework.boot:spring-boot-starter-freemarker')
+    compile('joda-time:joda-time:2.9.7')
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0'
+    compile group: 'org.springframework.security', name: 'spring-security-core', version: '4.2.8.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-web', version: '4.2.8.RELEASE'
+    compile group: 'org.mybatis', name: 'mybatis-guice', version: '3.7'
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+    compile group: 'aspectj', name: 'aspectjweaver', version: '1.5.4'
+    compile group: 'org.aspectj', name: 'aspectjrt', version: '1.7.3'
+    compile group: 'net.sf.jasperreports', name: 'jasperreports', version: '6.7.0'
+    compile group: 'net.sf.jasperreports', name: 'jasperreports-fonts', version: '6.0.0'
+    compile group: 'com.lowagie', name: 'itext', version: '2.1.7'
+    compile group: 'com.itextpdf', name: 'itextpdf', version: '5.0.6'
+    compile group: 'commons-io', name: 'commons-io', version: '2.4'
+    compile group: 'commons-net', name: 'commons-net', version: '3.6'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+    compile group: 'org.json', name: 'json', version: '20180813'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    compile group: 'commons-validator', name: 'commons-validator', version: '1.6'
+    compile group: 'org.apache.poi', name: 'poi', version: '3.17'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
+    compile group: 'com.opencsv', name: 'opencsv', version: '4.1'
+
+}
+
+task build_ui {
+  
+   
+    doLast {
+         println ''
+        println 'CLEAN UI RESOURCES ... '
+        
+
+        println ''
+        println 'PACKING ... '
+        }
+
+
+}
+
+
+task publish_war(type: War, dependsOn: build_ui) {
+    archiveName = rootProject.ext.warPackageName
+    group 'build_war'
+    description 'Publish WAR package for websphere server'
+    destinationDir = file("$buildDir/../out/artifacts")
+
+    manifest {
+        attributes  'Main-Class': 'com.dou.Application',
+                    'App_Version': rootProject.ext.appVersion,
+                    'Build_Date': buildTime(),
+                    'Spring_Boot_Version': rootProject.ext.springBootVersion,
+                    'Development_By': 'DOU Networking Company'
+    }
+
+    println '**************************************'
+    println '           BUILD WAR PACKAGE          '
+    println '**************************************'
+    println 'DEPENDENCIES: '
+    configurations.compile.allDependencies.each { dep -> println "    $dep.group:$dep.name:$dep.version" }
+
+    rootSpec.exclude(['**/public/**'])
+
+    from("$buildDir/resources/main/public") {
+        into "/"
+    }
+}
+
+
+def buildTime() {
+    def df = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss") // you can change it
+    df.setTimeZone(TimeZone.getTimeZone("UTC"))
+    return df.format(new Date())
+}

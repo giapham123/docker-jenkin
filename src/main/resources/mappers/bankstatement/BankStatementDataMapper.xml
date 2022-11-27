@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.bankstatement.mappers.BankStatementMapper">
+    <select id="getDataBankStatement" resultType="BankStatementModel" parameterType="BankStatementModel">
+        SELECT
+        BANKNAME bankName,
+        FILENAME fileName,
+        MAFC_ACCT acct,
+        BALANCE balance,
+        to_char( INSERTDATE , 'MM/DD/YYYY')AS statmentDt,
+        SAP_ACCT sapAcct
+        FROM
+        MAFCDB.bank_statement
+        WHERE 1=1
+        <if test="sapAcct != null and sapAcct != ''">
+            AND SAP_ACCT = #{sapAcct}
+        </if>
+        <if test="bankName != null and bankName != '' and bankName != 'All'">
+            AND BANKNAME = #{bankName}
+        </if>
+        <if test="acct != null and acct != ''">
+            AND MAFC_ACCT = #{acct}
+        </if>
+        AND TRUNC(INSERTDATE) <![CDATA[<=]]> TO_DATE(#{toDt}, 'MM-DD-YYYY')
+        AND TRUNC(INSERTDATE) <![CDATA[>=]]> TO_DATE(#{fromDt}, 'MM-DD-YYYY')
+        ORDER BY INSERTDATE DESC
+    </select>
+    <select id="getBank" resultType="String">
+        SELECT
+        BANKNAME bankName
+        FROM
+        MAFCDB.bank_statement
+        WHERE 1=1
+    </select>
+</mapper>

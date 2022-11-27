@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.RejectUploadFileMapper">
+    <select id="getRejectUploadFileData"  resultType="RejectUploadFileModel" parameterType="RejectUploadFileModel">
+        SELECT
+        agreementid,
+        agreementno,
+        batchid,
+        receiptno,
+        chequeno,
+        bankacnum,
+        drawnon,
+        towards,
+        receiptamt,
+        receiptdate,
+        userid,
+        uploaddate,
+        reason,
+        line_number no
+        FROM
+        (
+        SELECT
+        b.agreementid                         agreementid,
+        a.agreementno                         agreementno,
+        a.batchid                             batchid,
+        a.receiptno                           receiptno,
+        a.cheque_no                           chequeno,
+        a.bankacnum                           bankacnum,
+        a.drawnon                             drawnon,
+        a.towards                             towards,
+        a.receipt_amt                         receiptamt,
+        to_char(a.receipt_date, 'MM/DD/YYYY') receiptdate,
+        a.userid                              userid,
+        to_char(a.upload_date, 'MM/DD/YYYY')  uploaddate,
+        a.reason                              reason,
+        ROW_NUMBER()
+        OVER(
+        ORDER BY
+        a.upload_date DESC
+        )                                     line_number
+        FROM
+        java_leama.lea_ruu_reject_record_dtl a
+        LEFT JOIN java_leama.lea_agreement_dtl         b ON a.agreementno = b.agreementno
+        WHERE
+        1 = 1
+        <if test="agreementId != null and agreementId != ''">
+            AND b.agreementid = #{agreementId}
+        </if>
+        AND (TRUNC(a.upload_date) BETWEEN TO_DATE(#{fromDate}, 'MM-DD-YYYY')
+        AND TO_DATE(#{toDate}, 'MM-DD-YYYY'))
+        ORDER BY
+        a.towards,
+        a.reason ASC
+        )
+        WHERE
+        line_number BETWEEN 10 * (#{page} - 1) + 1 AND 10 * #{page}
+    </select>
+
+    <select id="countAllDataInRejectUpload"  resultType="int"  parameterType="RejectUploadFileModel">
+        select count(*)
+        FROM
+        java_leama.lea_ruu_reject_record_dtl a
+        LEFT JOIN java_leama.lea_agreement_dtl         b ON a.agreementno = b.agreementno
+        WHERE
+        1 = 1
+        <if test="agreementId != null and agreementId != ''">
+            AND b.agreementid = #{agreementId}
+        </if>
+        AND (TRUNC(a.upload_date) BETWEEN TO_DATE(#{fromDate}, 'MM-DD-YYYY')
+        AND TO_DATE(#{toDate}, 'MM-DD-YYYY'))
+        ORDER BY
+        a.towards,
+        a.reason ASC
+    </select>
+
+    <select id="exportRejectUploadFile"  resultType="RejectUploadFileModel" parameterType="RejectUploadFileModel">
+        SELECT
+        b.agreementid                         agreementid,
+        a.agreementno                         agreementno,
+        a.batchid                             batchid,
+        a.receiptno                           receiptno,
+        a.cheque_no                           chequeno,
+        a.bankacnum                           bankacnum,
+        a.drawnon                             drawnon,
+        a.towards                             towards,
+        a.receipt_amt                         receiptamt,
+        to_char(a.receipt_date, 'MM/DD/YYYY') receiptdate,
+        a.userid                              userid,
+        to_char(a.upload_date, 'MM/DD/YYYY')  uploaddate,
+        a.reason                              reason
+        FROM
+        java_leama.lea_ruu_reject_record_dtl a
+        LEFT JOIN java_leama.lea_agreement_dtl         b ON a.agreementno = b.agreementno
+        WHERE
+        1 = 1
+        <if test="agreementId != null and agreementId != ''">
+            AND b.agreementid = #{agreementId}
+        </if>
+        AND (TRUNC(a.upload_date) BETWEEN TO_DATE(#{fromDate}, 'MM-DD-YYYY')
+        AND TO_DATE(#{toDate}, 'MM-DD-YYYY'))
+        ORDER BY
+        a.towards,
+        a.reason ASC
+    </select>
+</mapper>

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.AccountingHisMapper">
+    <resultMap id="accountingHisModel" type="AccountingHisModel">
+        <result column="Scheme" property="scheme"></result>
+        <result column="agreementno" property="agreementNo"></result>
+        <result column="agreementid" property="agreementId"></result>
+        <result column="principle" property="principalOs"></result>
+        <result column="installments" property="pendingInst"></result>
+        <result column="currentmonthint" property="currentMonthint"></result>
+        <result column="currlpi" property="currLpi"></result>
+        <result column="overduecharges" property="overDuecharges"></result>
+        <result column="Foreclosurecharge" property="forceClosureCharges"></result>
+        <result column="excessamount" property="excessAmount"></result>
+        <result column="NetReceivables" property="netReceiable"></result>
+        <result column="NpaStage" property="npaStage"></result>
+        <result column="dpd" property="dpd"></result>
+        <result column="lastemi" property="lastEmi"></result>
+        <result column="lastduedate" property="lastDuedt"></result>
+        <result column="no" property="no"></result>
+    </resultMap>
+    <select id="getAccountingData"  resultMap="accountingHisModel" parameterType="AccountingHisModel">
+        SELECT
+        closureDate,
+        product                             product,
+        scheme                              scheme,
+        agreementno                         agreementno,
+        agreementid                         agreementid,
+        principle                           principle,
+        installments                        installments,
+        currentmonthint                     currentmonthint,
+        currlpi                             currlpi,
+        overduecharges                      overduecharges,
+        fore_closure_charge                 foreclosurecharge,
+        excessamount                        excessamount,
+        net_receivables                     netreceivables,
+        npa_stage                           npastage,
+        dpd                                 dpd,
+        last_emi                            lastemi,
+        max_instlnum                        instlamt,
+        last_duedate lastduedate,
+        line_number no
+        FROM
+        (
+        SELECT
+        a.product,
+        a.scheme,
+        a.agreementno,
+        a.agreementid,
+        a.principle,
+        a.installments,
+        a.currentmonthint,
+        a.currlpi,
+        a.overduecharges,
+        a.fore_closure_charge,
+        a.excessamount,
+        a.net_receivables,
+        a.npa_stage,
+        a.dpd,
+        a.last_emi,
+        a.max_instlnum,
+        to_char(a.last_duedate, 'MM/DD/YYYY') last_duedate,
+        to_char(a.CLOSUREDATE, 'MM/DD/YYYY') closureDate,
+        ROW_NUMBER()
+        OVER(
+        ORDER BY
+        a.last_duedate DESC
+        )                                   line_number
+        FROM
+        sqlserver1.MAFC_TERMI_SIM_RBT_HIS a
+        <if test="netReceipt.booleanValue()">
+        ,(
+        SELECT
+        ( b.net_receivables - a.receipt_amt ) net_receipt, a.AGREEMENTNO
+        FROM
+        (
+        SELECT DISTINCT
+        SUM(a.receipt_amt) receipt_amt,
+        a.agreementno
+        FROM
+        sqlserver1.mafc_ruu_uploaded_record_dtl a
+        WHERE
+            a.receipt_date > TO_DATE(#{closureDate} ||' 23:59:59', 'MM-DD-YYYY  hh24:mi:ss') - 1
+            and  a.receipt_date <![CDATA[<]]> TO_DATE(#{closureDate} ||' 00:00:00', 'MM-DD-YYYY  hh24:mi:ss') + 1
+<!--        trunc(a.receipt_date) = TO_DATE(#{closureDate}, 'MM-DD-YYYY')-->
+        GROUP BY
+        a.agreementno
+        ) a,
+        (
+        SELECT
+        SUM(net_receivables) net_receivables,
+        agreementno
+        FROM
+        sqlserver1.mafc_termi_sim_rbt_his
+        WHERE
+            CLOSUREDATE > TO_DATE(#{closureDate} ||' 23:59:59', 'MM-DD-YYYY  hh24:mi:ss') - 1
+        and  CLOSUREDATE <![CDATA[<]]> TO_DATE(#{closureDate} ||' 00:00:00', 'MM-DD-YYYY  hh24:mi:ss') + 1
+<!--        trunc(CLOSUREDATE) = TO_DATE(#{closureDate}, 'MM-DD-YYYY')-->
+        GROUP BY
+        agreementno
+        ) b
+        WHERE
+        a.agreementno = b.agreementno
+        )                                 b </if>
+        WHERE 1 = 1
+        <if test="agreementId != null and agreementId != ''">
+            AND a.agreementid = #{agreementId}
+        </if>
+        <if test="toDate != null">
+            AND TRUNC(a.last_duedate) <![CDATA[<=]]> TO_DATE(#{toDate}, 'MM-DD-YYYY')
+        </if>
+        <if test="fromDate != null">
+            AND TRUNC(a.last_duedate) <![CDATA[>=]]> TO_DATE(#{fromDate}, 'MM-DD-YYYY')
+        </if>
+
+        <if test="from != null and to != null">
+            AND (a.net_receivables BETWEEN #{from} AND #{to})
+        </if>
+
+        <if test="closureDate != null and closureDate != ''">
+            AND a.CLOSUREDATE > TO_DATE(#{closureDate} ||' 23:59:59', 'MM-DD-YYYY  hh24:mi:ss') - 1
+            and  a.CLOSUREDATE <![CDATA[<]]> TO_DATE(#{closureDate} ||' 00:00:00', 'MM-DD-YYYY  hh24:mi:ss') + 1
+<!--            AND TRUNC(a.CLOSUREDATE) = TO_DATE(#{closureDate}, 'MM-DD-YYYY')-->
+        </if>
+        <if test="netReceipt.booleanValue()">
+        AND a.agreementno = b.agreementno
+        AND b.net_receipt <![CDATA[<=]]> 120000
+        AND b.net_receipt <![CDATA[>=]]> - 120000
+        </if>
+<!--        <if test="fromDate != null and toDate != null">-->
+<!--            AND (TRUNC(last_duedate) BETWEEN TO_DATE(#{fromDate}, 'MM-DD-YYYY')-->
+<!--            AND TO_DATE(#{toDate}, 'MM-DD-YYYY'))-->
+<!--        </if>-->
+        )
+        WHERE
+        line_number BETWEEN 10 * (#{page} - 1) + 1 AND 10 * #{page}
+    </select>
+
+
+
+    <select id="countAllDataInTerminal"  resultType="int"  parameterType="AccountingHisModel">
+        select count(*) from
+        sqlserver1.MAFC_TERMI_SIM_RBT_HIS  a
+        <if test="netReceipt.booleanValue()">
+            ,(
+            SELECT
+            ( b.net_receivables - a.receipt_amt ) net_receipt, a.AGREEMENTNO
+            FROM
+            (
+            SELECT DISTINCT
+            SUM(a.receipt_amt) receipt_amt,
+            a.agreementno
+            FROM
+            sqlserver1.mafc_ruu_uploaded_record_dtl a
+            WHERE
+            a.receipt_date > TO_DATE(#{closureDate} ||' 23:59:59', 'MM-DD-YYYY  hh24:mi:ss') - 1
+            and  a.receipt_date <![CDATA[<]]> TO_DATE(#{closureDate} ||' 00:00:00', 'MM-DD-YYYY  hh24:mi:ss') + 1
+<!--            trunc(a.receipt_date) = TO_DATE(#{closureDate}, 'MM-DD-YYYY')-->
+            GROUP BY
+            a.agreementno
+            ) a,
+            (
+            SELECT
+            SUM(net_receivables) net_receivables,
+            agreementno
+            FROM
+            sqlserver1.mafc_termi_sim_rbt_his
+            WHERE
+            CLOSUREDATE > TO_DATE(#{closureDate} ||' 23:59:59', 'MM-DD-YYYY  hh24:mi:ss') - 1
+            and  CLOSUREDATE <![CDATA[<]]> TO_DATE(#{closureDate} ||' 00:00:00', 'MM-DD-YYYY  hh24:mi:ss') + 1
+<!--            trunc(CLOSUREDATE) = TO_DATE(#{closureDate}, 'MM-DD-YYYY')-->
+            GROUP BY
+            agreementno
+            ) b
+            WHERE
+            a.agreementno = b.agreementno
+            ) b
+        </if>
+        where 1=1
+        <if test="agreementId != null and agreementId != ''">
+            AND a.agreementid = #{agreementId}
+        </if>
+        <if test="toDate != null">
+            AND TRUNC(a.last_duedate) <![CDATA[<=]]> TO_DATE(#{toDate}, 'MM-DD-YYYY')
+        </if>
+        <if test="fromDate != null">
+            AND TRUNC(a.last_duedate) <![CDATA[>=]]> TO_DATE(#{fromDate}, 'MM-DD-YYYY')
+        </if>
+
+        <if test="from != null and to != null" >
+            AND (a.net_receivables BETWEEN #{from} AND #{to})
+        </if>
+
+        <if test="closureDate != null and closureDate != ''">
+            AND a.CLOSUREDATE > TO_DATE(#{closureDate} ||' 23:59:59', 'MM-DD-YYYY  hh24:mi:ss') - 1
+            and  a.CLOSUREDATE <![CDATA[<]]> TO_DATE(#{closureDate} ||' 00:00:00', 'MM-DD-YYYY  hh24:mi:ss') + 1
+<!--            AND TRUNC(a.CLOSUREDATE) = TO_DATE(#{closureDate}, 'MM-DD-YYYY')-->
+        </if>
+
+        <if test="netReceipt.booleanValue()">
+            AND a.agreementno = b.agreementno
+            AND b.net_receipt <![CDATA[<=]]> 120000
+            AND b.net_receipt <![CDATA[>=]]> - 120000
+        </if>
+<!--        <if test="fromDate != null and toDate != null">-->
+<!--            AND (TRUNC(last_duedate) BETWEEN TO_DATE(#{fromDate}, 'MM-DD-YYYY')-->
+<!--            AND TO_DATE(#{toDate}, 'MM-DD-YYYY'))-->
+<!--        </if>-->
+    </select>
+
+    <select id="getAccountingDataForExport"  resultMap="accountingHisModel" parameterType="AccountingHisModel">
+        SELECT
+        a.Product                           product,
+        a.Scheme                            scheme,
+        a.agreementno                         agreementno,
+        a.agreementid                         agreementid,
+        a.principle                           principle,
+        a.installments                        installments,
+        a.currentmonthint                     currentmonthint,
+        a.currlpi                             currlpi,
+        a.overduecharges                      overduecharges,
+        a.fore_closure_charge                 foreclosurecharge,
+        a.excessamount                        excessamount,
+        a.net_receivables                     netreceivables,
+        a.npa_stage                           npastage,
+        a.dpd                                 dpd,
+        a.last_emi                            lastemi,
+        a.max_instlnum                        instlamt,
+        to_char(a.last_duedate, 'MM/DD/YYYY') AS "lastduedate",
+        to_char(a.CLOSUREDATE, 'MM/DD/YYYY') closureDate
+        FROM
+        sqlserver1.MAFC_TERMI_SIM_RBT_HIS a
+        <if test="netReceipt.booleanValue()">
+            ,(
+            SELECT
+            ( b.net_receivables - a.receipt_amt ) net_receipt, a.AGREEMENTNO
+            FROM
+            (
+            SELECT DISTINCT
+            SUM(a.receipt_amt) receipt_amt,
+            a.agreementno
+            FROM
+            sqlserver1.mafc_ruu_uploaded_record_dtl a
+            WHERE
+            a.receipt_date > TO_DATE(#{closureDate} ||' 23:59:59', 'MM-DD-YYYY  hh24:mi:ss') - 1
+            and  a.receipt_date <![CDATA[<]]> TO_DATE(#{closureDate} ||' 00:00:00', 'MM-DD-YYYY  hh24:mi:ss') + 1
+<!--            trunc(a.receipt_date) = TO_DATE(#{closureDate}, 'MM-DD-YYYY')-->
+            GROUP BY
+            a.agreementno
+            ) a,
+            (
+            SELECT
+            SUM(net_receivables) net_receivables,
+            agreementno
+            FROM
+            sqlserver1.mafc_termi_sim_rbt_his
+            WHERE
+<!--            trunc(CLOSUREDATE) = TO_DATE(#{closureDate}, 'MM-DD-YYYY')-->
+            CLOSUREDATE > TO_DATE(#{closureDate} ||' 23:59:59', 'MM-DD-YYYY  hh24:mi:ss') - 1
+            and CLOSUREDATE <![CDATA[<]]> TO_DATE(#{closureDate} ||' 00:00:00', 'MM-DD-YYYY  hh24:mi:ss') + 1
+            GROUP BY
+            agreementno
+            ) b
+            WHERE
+            a.agreementno = b.agreementno
+            )                                 b </if>
+        where 1 = 1
+        <if test="agreementId != null and agreementId != ''">
+            AND a.agreementid = #{agreementId}
+        </if>
+        <if test="toDate != null">
+            AND TRUNC(a.last_duedate) <![CDATA[<=]]> TO_DATE(#{toDate}, 'MM-DD-YYYY')
+        </if>
+        <if test="fromDate != null">
+            AND TRUNC(a.last_duedate) <![CDATA[>=]]> TO_DATE(#{fromDate}, 'MM-DD-YYYY')
+        </if>
+
+        <if test="closureDate != null and closureDate != ''">
+<!--            AND TRUNC(a.CLOSUREDATE) = TO_DATE(#{closureDate}, 'MM-DD-YYYY')-->
+            AND a.CLOSUREDATE > TO_DATE(#{closureDate} ||' 23:59:59', 'MM-DD-YYYY  hh24:mi:ss') - 1
+            and  a.CLOSUREDATE <![CDATA[<]]> TO_DATE(#{closureDate} ||' 00:00:00', 'MM-DD-YYYY  hh24:mi:ss') + 1
+        </if>
+
+        <if test="from != null and to != null">
+            AND (a.net_receivables BETWEEN #{from} AND #{to})
+        </if>
+
+        <if test="netReceipt.booleanValue()">
+            AND a.agreementno = b.agreementno
+            AND b.net_receipt <![CDATA[<=]]> 120000
+            AND b.net_receipt <![CDATA[>=]]> - 120000
+        </if>
+<!--        <if test="fromDate != null and toDate != null">-->
+<!--            AND (TRUNC(last_duedate) BETWEEN TO_DATE(#{fromDate}, 'MM-DD-YYYY')-->
+<!--            AND TO_DATE(#{toDate}, 'MM-DD-YYYY'))-->
+<!--        </if>-->
+        order by a.last_duedate DESC
+    </select>
+</mapper>

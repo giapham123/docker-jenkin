@@ -1,0 +1,153 @@
+{
+  "name": "goomfi-admin-page",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve --open",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "deploy": "npm run build && firebase deploy",
+    "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "vue-cli-service test:e2e"
+  },
+  "dependencies": {
+    "@chidoan/excel-utils": "^2.0.0",
+    "@lazy-copilot/datetimepicker": "^0.1.47",
+    "axios": "^0.18.0",
+    "chart.js": "^2.9.3",
+    "downloadjs": "^1.4.7",
+    "eslint-plugin-prettier": "^3.1.0",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.2",
+    "node-sass": "^7.0.1",
+    "nprogress": "^0.2.0",
+    "numeral": "^2.0.6",
+    "pdfvuer": "^1.4.0",
+    "qs": "^6.5.2",
+    "sass-loader": "7.0.1",
+    "sha256": "^0.2.0",
+    "v-money": "^0.8.1",
+    "vee-validate": "^2.1.0-beta.8",
+    "vue": "^2.5.16",
+    "vue-currency-filter": "^2.3.0",
+    "vue-gapi": "^0.0.9",
+    "vue-i18n": "^8.0.0",
+    "vue-json-excel": "^0.2.83",
+    "vue-loading-overlay": "^3.0.1",
+    "vue-money-format": "^1.1.0",
+    "vue-numeric": "^2.3.0",
+    "vue-perfect-scrollbar": "^0.1.0",
+    "vue-resize": "^0.4.4",
+    "vue-router": "^3.0.1",
+    "vue-timeselector": "^0.1.7",
+    "vuedraggable": "^2.23.2",
+    "vuetify": "^1.2.1",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.0-rc.10",
+    "@vue/cli-plugin-e2e-nightwatch": "^3.0.0-rc.10",
+    "@vue/cli-plugin-eslint": "^3.0.0-rc.10",
+    "@vue/cli-plugin-unit-jest": "^3.0.0-rc.10",
+    "@vue/cli-service": "^3.0.0-rc.10",
+    "@vue/eslint-config-prettier": "^3.0.0-rc.10",
+    "@vue/test-utils": "^1.0.0-beta.20",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^23.0.1",
+    "lint-staged": "^7.2.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "vue-json-excel": "^0.2.83",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.5.16"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "@vue/prettier"
+    ],
+    "rules": {
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "vue/html-quotes": [
+        "error",
+        "double"
+      ],
+      "prettier/prettier": [
+        "error",
+        {
+          "trailingComma": "none",
+          "singleQuote": true
+        }
+      ],
+      "vue/html-end-tags": "error",
+      "vue/html-indent": [
+        "error",
+        2
+      ],
+      "vue/require-default-prop": "error",
+      "vue/require-prop-types": "error",
+      "vue/attributes-order": "error",
+      "vue/order-in-components": "error",
+      "vue/attribute-hyphenation": [
+        "error",
+        "always"
+      ]
+    },
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      "^.+\\.vue$": "vue-jest",
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "snapshotSerializers": [
+      "jest-serializer-vue"
+    ],
+    "testMatch": [
+      "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
+    ],
+    "testURL": "http://localhost/"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "vue-cli-service lint",
+      "git add"
+    ],
+    "*.vue": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
+}

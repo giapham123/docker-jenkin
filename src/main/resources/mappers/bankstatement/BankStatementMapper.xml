@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.bankstatement.mappers.FTPMapper">
+    <insert id="bankStatement" parameterType="BankStatementModel">
+        INSERT INTO mafcdb.BANK_STATEMENT (BankName, FileName, MAFC_Acct, Balance, Sap_Acct)
+        VALUES
+        (#{bankName,            javaType=String,     jdbcType=VARCHAR},
+        #{fileName,            javaType=String,     jdbcType=VARCHAR},
+        #{acct,            javaType=String,     jdbcType=VARCHAR},
+        #{balance,            javaType=String,     jdbcType=VARCHAR},
+        #{sapAcct,            javaType=String,     jdbcType=VARCHAR})
+    </insert>
+</mapper>
