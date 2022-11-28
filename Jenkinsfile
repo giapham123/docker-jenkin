@@ -8,11 +8,11 @@ pipeline {
 //
 
  stages {
-  stage('Cloning Git') {
-   steps {
-    git ''
-   }
-  }
+//   stage('Cloning Git') {
+//    steps {
+//     git ''
+//    }
+//   }
   stage('Install dependencies') {
    steps {
 
