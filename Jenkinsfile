@@ -1,10 +1,9 @@
 pipeline {
  agent any
 
-//  tools {
-// //     nodejs '7.7.3'
-// //   gradle 'gradle'
-//  }
+  tools {
+        gradle "GRADLE_LATEST"
+  }
 
 
  stages {
