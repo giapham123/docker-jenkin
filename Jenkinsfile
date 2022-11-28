@@ -34,6 +34,7 @@ pipeline {
   stage('Build war file') {
    steps {
     sh 'ls'
+    bat './gradlew.bat publish_war'
 //     sh 'gradle --version'
 //     sh 'gradle publish_war'
 
