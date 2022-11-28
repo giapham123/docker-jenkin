@@ -2,7 +2,7 @@ pipeline {
  agent any
 
   tools {
-        gradle "gradle-4.0"
+        gradle "gradle"
   }
 
 
