@@ -34,7 +34,7 @@ pipeline {
   stage('Build war file') {
    steps {
     sh 'ls'
-    sh 'gradle --version'
+//     sh 'gradle --version'
     sh 'gradle publish_war'
 
    }
