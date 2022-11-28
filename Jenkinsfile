@@ -1,11 +1,11 @@
 pipeline {
  agent any
 
-//  tools {
-//   nodejs 'nodejs'
-//   gradle 'gradle'
-//  }
-//
+ tools {
+  nodejs 'nodejs'
+  gradle 'gradle'
+ }
+
 
  stages {
 //   stage('Cloning Git') {
