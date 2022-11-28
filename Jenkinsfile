@@ -2,7 +2,7 @@ pipeline {
  agent any
 
  tools {
-  nodejs 'nodejs'
+    nodejs '7.7.3'
   gradle 'gradle'
  }
 
