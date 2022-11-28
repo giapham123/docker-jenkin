@@ -3,7 +3,7 @@ pipeline {
 
  tools {
 //     nodejs '7.7.3'
-  gradle 'gradle'
+//   gradle 'gradle'
  }
 
 
@@ -13,22 +13,22 @@ pipeline {
 //     git ''
 //    }
 //   }
-  stage('Install dependencies') {
-   steps {
-
-    sh 'rm -rf out'
-    dir('front-end') {
-
-     sh 'pwd'
-     sh 'ls'
-     sh 'npm install -g yarn'
-     sh 'yarn install'
-     sh 'yarn build'
-
-
-    }
-   }
-  }
+//   stage('Install dependencies') {
+//    steps {
+//
+//     sh 'rm -rf out'
+//     dir('front-end') {
+//
+//      sh 'pwd'
+//      sh 'ls'
+//      sh 'npm install -g yarn'
+//      sh 'yarn install'
+//      sh 'yarn build'
+//
+//
+//     }
+//    }
+//   }
 
 
 
