@@ -2,7 +2,7 @@ pipeline {
  agent any
 
   tools {
-        gradle "Gradle-4.6-all"
+        gradle "gradle-4.0"
   }
 
 
@@ -33,7 +33,7 @@ pipeline {
 
   stage('Build war file') {
    steps {
-    sh 'ls'
+//     sh 'ls'
     sh 'gradle --version'
 //     sh 'gradle publish_war'
 
