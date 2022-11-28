@@ -35,7 +35,7 @@ pipeline {
    steps {
     sh 'ls'
     sh 'gradle --version'
-    sh 'gradle publish_war'
+//     sh 'gradle publish_war'
 
    }
   }
