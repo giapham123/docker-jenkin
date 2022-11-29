@@ -7,7 +7,7 @@ pipeline {
 
     tools {
         gradle "gradle"
-        dockerHome "docker"
+        docker "docker"
     }
     stages {
         stage('Build war file') {
