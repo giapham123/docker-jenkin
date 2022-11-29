@@ -1,5 +1,10 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKER_IMAGE = "nhtua/flask-docker"
+    }
+
     tools {
         gradle "gradle"
     }
