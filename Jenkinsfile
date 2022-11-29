@@ -7,8 +7,21 @@ pipeline {
 
     tools {
         gradle "gradle"
+        nodejs "nodejs"
     }
     stages {
+        stage('Install dependencies') {
+            steps {
+                sh 'rm -rf out'
+                dir('front-end') {
+                    sh 'pwd'
+                    sh 'ls'
+                    sh 'npm install -g yarn'
+                    sh 'yarn install'
+                    sh 'yarn build'
+                }
+            }
+        }
         stage('Build war file') {
             environment {
                 DOCKER_TAG="${GIT_BRANCH.tokenize('/').pop()}-${GIT_COMMIT.substring(0,7)}"
