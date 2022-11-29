@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "nhtua/flask-docker"
+        DOCKER_IMAGE = "27121994/flask-docker"
     }
 
     tools {
