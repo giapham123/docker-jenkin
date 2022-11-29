@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "27121994/flask-docker"
+        DOCKER_IMAGE = "27121994/spring-boot-jenkin-docker"
     }
 
     tools {
@@ -26,7 +26,9 @@ pipeline {
                             sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
                             sh "docker push ${DOCKER_IMAGE}:latest"
                 }
-
+                //clean to save disk
+                sh "docker image rm ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                sh "docker image rm ${DOCKER_IMAGE}:latest"
             }
         }
     }
