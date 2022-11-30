@@ -31,8 +31,6 @@ import java.util.List;
 public class LoginController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-
-
     @Value("${web.client.inactive.minutes}")
     private int clientInActiveMinutes;
 
@@ -62,6 +60,7 @@ public class LoginController {
 
     @PostMapping("/login/auth")
     public ResponseEntity<?> authenticateUser(@RequestBody JwtUser user, HttpServletResponse response) {
+        String a= "aaa";
         ResponseObject bizResponse = new ResponseObject();
         User userDB = validUser(user.getUsername(), user.getPassword());
         if(userDB != null){
