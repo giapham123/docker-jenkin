@@ -93,7 +93,6 @@ public class ResourceConfigurations {
                         .register("http", new PlainConnectionSocketFactory())
                         .build();
 
-
         BasicHttpClientConnectionManager connectionManager =
                 new BasicHttpClientConnectionManager(socketFactoryRegistry);
         CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslsf)
