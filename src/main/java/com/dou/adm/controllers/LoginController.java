@@ -31,6 +31,8 @@ import java.util.List;
 public class LoginController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
+
+
     @Value("${web.client.inactive.minutes}")
     private int clientInActiveMinutes;
 
