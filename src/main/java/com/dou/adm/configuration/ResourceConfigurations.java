@@ -45,8 +45,6 @@ public class ResourceConfigurations {
     @Value("${storage.document}")
     private String documentStorage;
 
-
-
     @Value("${storage.print-template}")
     private String printTemplateStorage;
 
