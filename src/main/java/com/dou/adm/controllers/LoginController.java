@@ -70,6 +70,8 @@ public class LoginController {
                 profiles = new UserProfiles(userDB);
             }
 
+
+
             jwtUser.setProfiles(profiles);
             String jwt = jwtProvider.generateToken(jwtUser);
 
