@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.staff_info.mappers.AccountInfoCallCenterMapper">
+    <resultMap id="AccountInfoCallCenterServiceMap" type="AccountInfoCallCenter">
+        <result column="ID" property="id"></result>
+        <result column="FULLNAME" property="fullName"></result>
+        <result column="ACCOUNTID" property="accountId"></result>
+        <result column="MAFCCODE" property="mafcCode"></result>
+        <result column="EMAIL" property="email"></result>
+        <result column="PHONE" property="phone"></result>
+        <result column="MOBILE" property="mobile"></result>
+        <result column="LEVEL" property="level"></result>
+        <result column="POSITIONCOMPANYID" property="positionCompanyId"></result>
+        <result column="ISDELETED" property="isDeleted"></result>
+        <result column="JOININGDATE" property="joiningDate"></result>
+        <result column="ENDDATE" property="endDate"></result>
+        <result column="STATUS" property="status"></result>
+        <result column="BRANCHID" property="branchId"></result>
+        <result column="DEPARTMENTID" property="departmentId"></result>
+        <result column="CREATEDDATE" property="createDate"></result>
+        <result column="MODIFIEDDATE" property="modifiedDate"></result>
+        <result column="CREATEDBY" property="createdBy"></result>
+        <result column="MODIFIEDBY" property="modifiedBy"></result>
+        <result column="DELETEDDATE" property="deletedDate"></result>
+        <result column="DELETEDBY" property="deletedBy"></result>
+        <result column="SUPERVISORID" property="supervisorId"></result>
+        <result column="ISADMIN" property="isAdmin"></result>
+        <result column="STAFFTYPE" property="staffType"></result>
+        <result column="GROUP" property="group"></result>
+        <result column="TEAM" property="team"></result>
+        <result column="AREA" property="area"></result>
+        <result column="PERSONALID" property="personalId"></result>
+    </resultMap>
+
+    <select id="getAll" resultMap="AccountInfoCallCenterServiceMap">
+        SELECT  ID,
+                FULLNAME,
+                ACCOUNTID,
+                MAFCCODE,
+                EMAIL,
+                PHONE,
+                MOBILE,
+                "LEVEL",
+                POSITIONCOMPANYID,
+                ISDELETED,
+                JOININGDATE,
+                ENDDATE,
+                STATUS,
+                BRANCHID,
+                DEPARTMENTID,
+                CREATEDDATE,
+                MODIFIEDDATE,
+                CREATEDBY,
+                MODIFIEDBY,
+                DELETEDDATE,
+                DELETEDBY,
+                SUPERVISORID,
+                ISADMIN,
+                STAFFTYPE,
+                "GROUP",
+                TEAM,
+                AREA,
+                PERSONALID
+        FROM MAACC.ACCOUNTINFOCALLCENTER
+        WHERE SUPERVISORID = #{supervisorId}
+    </select>
+
+    <select id="getInfo" resultMap="AccountInfoCallCenterServiceMap">
+        SELECT  ID,
+                FULLNAME,
+                ACCOUNTID,
+                MAFCCODE,
+                EMAIL,
+                PHONE,
+                MOBILE,
+                "LEVEL",
+                POSITIONCOMPANYID,
+                ISDELETED,
+                JOININGDATE,
+                ENDDATE,
+                STATUS,
+                BRANCHID,
+                DEPARTMENTID,
+                CREATEDDATE,
+                MODIFIEDDATE,
+                CREATEDBY,
+                MODIFIEDBY,
+                DELETEDDATE,
+                DELETEDBY,
+                SUPERVISORID,
+                ISADMIN,
+                STAFFTYPE,
+                "GROUP",
+                TEAM,
+                AREA,
+                PERSONALID
+        FROM MAACC.ACCOUNTINFOCALLCENTER
+        WHERE 1 = 1
+        <if test="accountId != null and !''.equals(accountId)">
+            AND UPPER(ACCOUNTID) like ('%' || UPPER(#{accountId}) || '%')
+        </if>
+        <if test="mafcCode != null and !''.equals(mafcCode)">
+            AND UPPER(MAFCCODE) like ('%' || UPPER(#{mafcCode}) || '%')
+        </if>
+        <if test="personalId != null and !''.equals(personalId)">
+            AND UPPER(PERSONALID) like ('%' || UPPER(#{personalId}) || '%')
+        </if>
+        <if test="mobile != null and !''.equals(mobile)">
+           AND MOBILE like ('%' || #{mobile} || '%')
+        </if>
+    </select>
+
+    <select id="checkExistAccountId" resultMap="AccountInfoCallCenterServiceMap">
+        SELECT ACCOUNTID FROM MAACC.ACCOUNTINFOCALLCENTER
+        WHERE ACCOUNTID = UPPER(#{accountId})
+    </select>
+
+    <insert id="insertInfo" parameterType="AccountInfoCallCenter">
+        INSERT INTO MAACC.ACCOUNTINFOCALLCENTER
+        (MAFCCODE,
+         ACCOUNTID,
+         FULLNAME,
+         EMAIL,
+         PHONE,
+         MOBILE,
+         POSITIONCOMPANYID,
+         ISADMIN,
+         STAFFTYPE,
+         JOININGDATE,
+         SUPERVISORID,
+         BRANCHID,
+         "LEVEL",
+         "GROUP",
+         TEAM,
+         PERSONALID,
+         AREA,
+         DEPARTMENTID,
+         STATUS
+         )
+        VALUES
+        (UPPER(#{mafcCode}), UPPER(#{accountId}),UPPER (#{fullName}),#{email},#{phone},#{mobile},
+         #{positionCompanyId},#{isAdmin},#{staffType},#{joiningDate},#{supervisorId},#{branchId},
+         #{level},#{group},#{team}, #{personalId},#{area},#{departmentId},#{status})
+    </insert>
+
+    <update id="updateInfo" parameterType="AccountInfoCallCenter">
+        UPDATE MAACC.ACCOUNTINFOCALLCENTER
+        SET MAFCCODE = NVL(#{mafcCode},MAFCCODE),
+            FULLNAME = NVL(#{fullName},FULLNAME),
+            EMAIL = NVL(#{email},EMAIL),
+            PHONE = NVL(#{phone},PHONE),
+            MOBILE = NVL(#{mobile},MOBILE),
+            POSITIONCOMPANYID = #{positionCompanyId},
+            ISADMIN = #{isAdmin},
+            JOININGDATE = #{joiningDate},
+            ENDDATE = #{endDate},
+            ISDELETED = #{isDeleted},
+            SUPERVISORID = #{supervisorId},
+            BRANCHID = #{branchId},
+            STAFFTYPE = #{staffType},
+            "LEVEL" = #{level},
+            "GROUP" = #{group},
+            TEAM = #{team},
+            DEPARTMENTID = #{departmentId},
+            STATUS = #{status},
+            AREA = #{area},
+            PERSONALID = #{personalId}
+
+       WHERE ACCOUNTID = #{accountId}
+    </update>
+
+    <update id="delete" parameterType="AccountInfoCallCenter">
+        UPDATE MAACC.ACCOUNTINFOCALLCENTER
+        SET STATUS = 'IACT'
+        WHERE ACCOUNTID = #{accountId}
+    </update>
+
+    <delete id="deleteAccountInfoCallCenter" parameterType="AccountInfoCallCenter">
+        DELETE FROM MAACC.ACCOUNTINFOCALLCENTER
+    </delete>
+
+    <insert id="insertAccountInfoCallCenter_LastBackUp" parameterType="AccountInfoCallCenter">
+        INSERT INTO MAACC.ACCOUNTINFOCALLCENTER_LASTBACKUP
+        (ID, FULLNAME, ACCOUNTID, MAFCCODE, EMAIL, PHONE, MOBILE, "LEVEL", POSITIONCOMPANYID, ISDELETED, JOININGDATE, ENDDATE, STATUS, BRANCHID, DEPARTMENTID, CREATEDDATE, MODIFIEDDATE, CREATEDBY, MODIFIEDBY, DELETEDDATE, DELETEDBY, SUPERVISORID, ISADMIN, STAFFTYPE, "GROUP", TEAM, AREA, PERSONALID)
+        SELECT  ID,
+                FULLNAME,
+                ACCOUNTID,
+                MAFCCODE,
+                EMAIL,
+                PHONE,
+                MOBILE,
+                "LEVEL",
+                POSITIONCOMPANYID,
+                ISDELETED,
+                JOININGDATE,
+                ENDDATE,
+                STATUS,
+                BRANCHID,
+                DEPARTMENTID,
+                CREATEDDATE,
+                MODIFIEDDATE,
+                CREATEDBY,
+                MODIFIEDBY,
+                DELETEDDATE,
+                DELETEDBY,
+                SUPERVISORID,
+                ISADMIN,
+                STAFFTYPE,
+                "GROUP",
+                TEAM,
+                AREA,
+                PERSONALID
+        FROM MAACC.ACCOUNTINFOCALLCENTER
+    </insert>
+
+    <delete id="deleteAccountInfoCallCenter_LastBackUp" parameterType="AccountInfoCallCenter">
+        DELETE FROM MAACC.ACCOUNTINFOCALLCENTER_LASTBACKUP
+    </delete>
+
+    <insert id="importListAccountInfoCallCenter" parameterType="java.util.HashMap" useGeneratedKeys="true">
+        INSERT INTO MAACC.ACCOUNTINFOCALLCENTER
+        (ID,
+         FULLNAME,
+         ACCOUNTID,
+         MAFCCODE,
+         EMAIL,
+         PHONE,
+         MOBILE,
+         "LEVEL",
+         POSITIONCOMPANYID,
+         ISDELETED,
+         JOININGDATE,
+         ENDDATE,
+         STATUS,
+         BRANCHID,
+         DEPARTMENTID,
+         CREATEDDATE,
+         MODIFIEDDATE,
+         CREATEDBY,
+         MODIFIEDBY,
+         DELETEDDATE,
+         DELETEDBY,
+         SUPERVISORID,
+         ISADMIN,
+         STAFFTYPE,
+         "GROUP",
+         TEAM,
+         AREA,
+         PERSONALID)
+        VALUES
+        <foreach item="item"  index="index" collection= "list"  open="" separator="," close="">
+            (SEQ_ACCOUNTINFOCALLCENTER.NETVAL,UPPER (#{item.fullName}), (UPPER(#{item.accountId})), (UPPER (#{item.mafcCode})),#{item.email}, #{item.phone}, #{item.mobile},
+            #{item.level},#{item.positionCompanyId},#{item.isDeleted},#{item.joiningDate},
+            #{item.endDate},UPPER(#{item.status}),#{item.branchId},#{item.departmentId},
+            #{item.createDate}, #{item.modifiedDate},#{item.createdBy},#{item.modifiedBy},#{item.deletedDate},#{item.deletedBy},
+            UPPER(#{item.supervisorId}),#{item.isAdmin},#{item.staffType},
+            #{item.group}, #{item.team}, #{item.area}, #{item.personalId})
+        </foreach>
+    </insert>
+
+</mapper>

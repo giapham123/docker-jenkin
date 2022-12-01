@@ -1,31 +1,29 @@
 <template>
-  <v-container fluid fill-height>
-    <v-layout align-center justify-center>
-      <div class="mr-3 hidden-sm-and-down">
-        <img src="/static/error/403.svg" alt="" />
-      </div>
-      <div class="text-md-center">
-        <h1>403</h1>
-        <h2 class="my-3 headline ">Sorry, access denied.</h2>
-        <div>
-          <v-btn class="white--text" color="#00695c" @click="goHome">
-            Go Home
-          </v-btn>
+  <v-app id="404">
+    <v-container fluid fill-height>
+      <v-layout align-center justify-center>
+        <div class="mr-3 hidden-sm-and-down">
+          <img src="/static/error/403.svg" alt="" />
         </div>
-      </div>
-    </v-layout>
-  </v-container>
+        <div class="text-md-center">
+          <h1>403</h1>
+          <h2 class="my-3 headline ">Sorry, access denied.</h2>
+          <div>
+            <v-btn class="white--text" color="#00695c" @click="goHome">
+              Go Home
+            </v-btn>
+          </div>
+        </div>
+      </v-layout>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-
 export default {
   methods: {
-    ...mapActions('login', ['logout']),
     goHome() {
-      // this.$router.push({ path: '/' });
-      this.logout().then(() => this.$router.push({ path: '/login' }));
+      this.$router.push({ path: '/' });
     }
   }
 };

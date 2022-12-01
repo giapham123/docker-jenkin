@@ -1,6 +1,4 @@
-import NAMING from './routes-naming';
-
-export const BASE_ROUTES = [
+export default [
   {
     path: '*',
     meta: {
@@ -51,12 +49,10 @@ export const BASE_ROUTES = [
     }
   },
   {
-    path: '/disbursal-tool/dashboard',
-    meta: {
-      requiresAuth: true
-    },
-    name: NAMING.DASHBOARD,
-    component: () => import('modules/dashboard')
+    path: '/',
+    redirect: {
+      path: '/accountmanagement'
+    }
   },
   {
     path: '/register',
@@ -85,198 +81,123 @@ export const BASE_ROUTES = [
     }
   },
   {
-    path: '/',
+    path: '/accountmanagement',
     meta: {
-      title: 'Dashboard',
-      header: 'Dashboard',
-      requiresAuth: true,
-      menu: true,
-      icon: 'home'
+      requiresAuth: true
     },
-    name: 'dashboard',
-    component: () => import('modules/dashboard')
+    name: 'Account_Management',
+    component: () => import('modules/accountmanagement')
+  },
+  {
+    path: '/accountmanagement_group',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Account Management on Group Permission',
+    component: () => import('modules/accountmanagement_group')
+  },
+  {
+    path: '/groupfeature',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Group Feature Management',
+    component: () => import('modules/group_feature')
+  },
+  {
+    path: '/staff_info/branch_network_staff',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Staff Information Of Branch Network Department',
+    component: () => import('modules/staff_info/branch_network_staff')
+  },
+  {
+    path: '/staff_info/drs_staff',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Staff Information Of DRS Department',
+    component: () => import('modules/staff_info/drs_staff')
+  },
+  {
+    path: '/staff_info/drs_detail',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Staff Information Of DRS Detail',
+    component: () => import('modules/staff_info/drs_detail')
+  },
+  {
+    path: '/staff_info/so_staff',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Staff Information Of Sale Operation Department',
+    component: () => import('modules/staff_info/so_staff')
+  },
+  {
+    path: '/staff_info/und_staff',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Staff Information Of Underwriting Department',
+    component: () => import('modules/staff_info/und_staff')
+  },
+  {
+    path: '/staff_info/callcenter_staff',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Staff Information Of Call Center Department',
+    component: () => import('modules/staff_info/callcenter_staff')
+  },
+  {
+    path: '/staff_info/telesale_staff',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Staff Information Of Telesale Department',
+    component: () => import('modules/staff_info/telesale_staff')
+  },
+  {
+    path: '/staff_info/thirdparty_staff',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Staff Information Of Third Party Department',
+    component: () => import('modules/staff_info/thirdparty_staff')
+  },
+  {
+    path: '/staff_info/request_tickets',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Request Ticket',
+    component: () => import('modules/staff_info/request_tickets')
+  },
+  {
+    path: '/staff_info/verify_tickets',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Verify Ticket',
+    component: () => import('modules/staff_info/verify_tickets')
+  },
+  {
+    path: '/staff_info/report_requests',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Report Request',
+    component: () => import('modules/staff_info/report_request')
+  },
+  {
+    path: '/staff_info/account_review',
+    meta: {
+      requiresAuth: true
+    },
+    name: 'Account Review',
+    component: () => import('modules/staff_info/account_info_review')
   }
-];
-
-export const TERMI_ROUTES = [
-  {
-    path: '/termination',
-    meta: {
-      requiresAuth: true,
-      menu: true,
-      super: true,
-      group: 'acc_01',
-      title: 'Termination',
-      header: 'Termination',
-      icon: 'dashboard'
-    },
-    name: NAMING.TERMINATION
-  },
-  {
-    path: '/check-termination-daily-report',
-    component: () => import('modules/check-termination-daily-report'),
-    meta: {
-      requiresAuth: true,
-      menu: true,
-      group: 'acc_01',
-      title: 'Check Termination Daily Report',
-      header: 'Check Termination Daily Report'
-    },
-    name: NAMING.CHECK_TERMINATION_DAILY_REPORT
-  },
-  {
-    path: '/termination-simulation-report',
-    component: () => import('modules/accounting'),
-    meta: {
-      requiresAuth: true,
-      menu: true,
-      group: 'acc_01',
-      title: 'Termination simulation report',
-      header: 'Termination simulation report'
-    },
-    name: NAMING.ACCOUNTING
-  },
-  {
-    path: '/termination-simulation-report-his',
-    component: () => import('modules/accounting-his'),
-    meta: {
-      requiresAuth: true,
-      menu: true,
-      group: 'acc_01',
-      title: 'Termination simulation report his',
-      header: 'Termination simulation report his'
-    },
-    name: NAMING.ACCOUNTING_HIS
-  },
-  {
-    path: '/writeoff-ext',
-    component: () => import('modules/writeoff-ext'),
-    meta: {
-      requiresAuth: true,
-      menu: true,
-      group: 'acc_01',
-      title: 'WriteOff EXT',
-      header: 'WriteOff EXT'
-    },
-    name: NAMING.WRITEOFFEXT
-  },
-
-  {
-    path: '/waveoffamount',
-    component: () => import('modules/wave-off-amount'),
-    meta: {
-      requiresAuth: true,
-      title: 'Waveoff Amount',
-      menu: true,
-      header: 'Waveoff Amount'
-    },
-    name: NAMING.WAVE_OFF_AMOUNT
-  },
-  {
-    path: '/receipt-upload',
-    meta: {
-      requiresAuth: true,
-      menu: true,
-      super: true,
-      group: 'acc_02',
-      title: 'Receipt Upload',
-      header: 'Receipt Upload',
-      icon: 'upload_file'
-    },
-    name: NAMING.RECEIPT_UPLOAD
-  },
-  {
-    path: '/upload-file',
-    component: () => import('modules/upload-file'),
-    meta: {
-      requiresAuth: true,
-      menu: true,
-      group: 'acc_02',
-      title: 'Receipt upload report',
-      header: 'Receipt upload report'
-    },
-    name: NAMING.UPLOAD_FILE
-  },
-  {
-    path: '/reject-upload-file',
-    component: () => import('modules/reject-upload-file'),
-    meta: {
-      requiresAuth: true,
-      menu: true,
-      group: 'acc_02',
-      title: 'Reject upload report',
-      header: 'Reject upload report'
-    },
-    name: NAMING.REJECT_UPLOAD_FILE
-  },
-  {
-    path: '/reject-upload-file-gl-sap',
-    component: () => import('modules/reject-upload-file-gl-sap'),
-    meta: {
-      requiresAuth: true,
-      menu: true,
-      group: 'acc_02',
-      title: 'Reject upload_SAP template',
-      header: 'Reject upload_SAP template'
-    },
-    name: NAMING.REJECT_UPLOAD_FILE_GL_SAP
-  },
-  {
-    path: '/termination-out-net-report',
-    component: () => import('modules/out-net-report'),
-    meta: {
-      requiresAuth: true,
-      menu: true,
-      group: 'acc_02',
-      title: 'OUT NET Report',
-      header: 'OUT NET Report'
-    },
-    name: NAMING.OUT_NET_REPORT
-  },
-  {
-    path: '/close-soldout',
-    component: () => import('modules/close-soldout'),
-    meta: {
-      requiresAuth: true,
-      title: 'Close Soldout',
-      menu: true,
-      header: 'Close Soldout'
-    },
-    name: NAMING.CLOSE_SOLDOUT
-  },
-  {
-    path: '/schedule-bf-reduce-interest',
-    component: () => import('modules/schedule-bf-reduce-interest'),
-    meta: {
-      requiresAuth: true,
-      title: 'Schedule bf reduce interest',
-      menu: true,
-      header: 'Schedule bf reduce interest'
-    },
-    name: NAMING.SCHEDULE_BF_REDUCE_INTEREST
-  },
-  {
-    path: '/bank-statement',
-    meta: {
-      requiresAuth: true,
-      menu: true,
-      title: 'Bank Statement',
-      header: 'Bank Statement',
-      icon: 'dashboard'
-    },
-    name: NAMING.BANK_STATEMENT,
-    component: () => import('modules/bank-statement')
-  },
-  {
-    path: '/cas-repayment-schedule',
-    meta: {
-      requiresAuth: true,
-      menu: true,
-      title: 'Cas Repayment Schedule',
-      header: 'Cas Repayment Schedule',
-      icon: 'dashboard'
-    },
-    name: NAMING.CAS_REPAYMENT_SCHEDULE,
-    component: () => import('modules/cas-repayment-schedule')
-  },
 ];

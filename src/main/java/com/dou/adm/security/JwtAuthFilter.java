@@ -1,16 +1,12 @@
 package com.dou.adm.security;
 
-import com.dou.adm.shared.SaveActivitiesLogs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -28,39 +24,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private JwtProvider tokenProvider;
 
-    @Autowired
-    private SaveActivitiesLogs saveActivitiesLogs;
-
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            if (tokenProvider == null) {
-                ServletContext servletContext = request.getServletContext();
-                WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-                tokenProvider = webApplicationContext.getBean(JwtProvider.class);
-            }
-            if (saveActivitiesLogs == null) {
-                ServletContext servletContext = request.getServletContext();
-                WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-                saveActivitiesLogs = webApplicationContext.getBean(SaveActivitiesLogs.class);
-            }
-            String pathApi = request.getRequestURI();
-
             String CORSAllowHeaders = request.getHeader("Access-Control-Request-Headers");
             if (CORSAllowHeaders == null || !CORSAllowHeaders.contains("authorization")) {
                 String jwt = request.getHeader("Authorization");
 
                 if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                     JwtUser jwtUser = tokenProvider.getJwtUser(jwt);
-                    request.setAttribute(REQ_USR, jwtUser);
-                    try {
-                        saveActivitiesLogs.funcSaveLog(pathApi, jwtUser.getUsername());
-                    }catch (Exception e){
-                        System.out.println(e);
-                        logger.error("Error Log user actions: ", e);
-                    }
+                    request.setAttribute("jwtUser", jwtUser);
                 }
                 else {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -75,4 +50,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
+
+//    private String getJwtFromRequest(HttpServletRequest request) {
+//        String bearerToken = request.getHeader("Authorization");
+//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+//            return bearerToken.substring(7, bearerToken.length());
+//        }
+//        return null;
+//    }
 }

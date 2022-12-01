@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.acctmanagement.mappers.GroupFeatureMapper">
+    <resultMap id="GroupFeatureServiceMap" type="GroupFeature">
+        <result column="ID" property="id"></result>
+        <result column="GROUPID" property="groupId"></result>
+        <result column="FEATUREID" property="featureId"></result>
+        <result column="HIDDENFIELDID" property="hiddenFieldId"></result>
+        <result column="NAME" property="featureName"></result>
+        <result column="GROUPNAME" property="groupName"></result>
+    </resultMap>
+
+    <select id="getGroupFeatureByGroupId" resultMap="GroupFeatureServiceMap" parameterType="String">
+        SELECT A.ID,
+               A.GROUPID,
+               A.FEATUREID,
+               A.HIDDENFIELDID,
+               B.NAME
+        FROM MAACC.GROUPFEATURE A,
+             MAACC.FEATURE B
+        WHERE FEATUREID = CODEID
+        AND GROUPID = #{groupId}
+    </select>
+
+    <select id="getGroupFeatureByGroupId_01" resultMap="GroupFeatureServiceMap" parameterType="String">
+        SELECT ID,
+               GROUPID,
+               FEATUREID,
+               HIDDENFIELDID
+        FROM MAACC.GROUPFEATURE
+        WHERE GROUPID = #{groupId}
+        ORDER BY FEATUREID
+    </select>
+
+    <select id="getGroupFeatureById" resultMap="GroupFeatureServiceMap" parameterType="GroupFeature">
+        SELECT ID,
+               GROUPID,
+               FEATUREID,
+               HIDDENFIELDID
+        FROM MAACC.GROUPFEATURE
+        WHERE GROUPID = #{groupId}
+        AND FEATUREID = #{featureId}
+    </select>
+
+    <select id="loadGroupFeature" resultMap="GroupFeatureServiceMap" parameterType="GroupFeature">
+        SELECT A.ID,
+               A.GROUPID,
+               A.FEATUREID,
+               A.HIDDENFIELDID,
+               B.NAME,
+               C.NAME AS "GROUPNAME"
+        FROM MAACC.GROUPFEATURE A,
+             MAACC.FEATURE B,
+             MAACC."GROUP" C
+        WHERE A.FEATUREID = B.CODEID
+        AND A.GROUPID = C.CODEID
+        <if test = "groupId != null and !(''.equals(groupId))">
+            AND A.GROUPID = #{groupId}
+        </if>
+        <if test = "featureId != null and !(''.equals(featureId))">
+            AND A.FEATUREID = #{featureId}
+        </if>
+        ORDER BY A.GROUPID, A.FEATUREID
+    </select>
+
+    <insert id="insGroupFeature" parameterType="GroupFeature">
+        INSERT INTO MAACC.GROUPFEATURE
+        (GROUPID, FEATUREID, HIDDENFIELDID)
+        VALUES
+        (#{groupId}, #{featureId}, #{hiddenFieldId})
+    </insert>
+
+    <delete id="delGroupFeature" parameterType="GroupFeature">
+        DELETE MAACC.GROUPFEATURE
+        WHERE ID = #{id}
+    </delete>
+
+</mapper>

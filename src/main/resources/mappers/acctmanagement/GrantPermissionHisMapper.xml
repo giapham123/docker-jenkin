@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.acctmanagement.mappers.GrantPermissionHisMapper">
+    <insert id="insGrantPermissionHis" parameterType="GrantPermissionHis">
+        INSERT INTO MAACC.GRANTPERMISSIONHIS
+        (USERCREATE, MAFCCODE, FEATURE, ACTION)
+        VALUES
+        (UPPER(#{userCreate}), UPPER(#{accountId}), #{featureCodeId}, UPPER(#{action}))
+    </insert>
+
+   <!-- <insert id="insGrantGroupPermissionHis" parameterType="GrantPermissionHis">
+        INSERT INTO MAACC.GRANTPERMISSIONHIS
+        (USERCREATE, MAFCCODE, FEATURE, ACTION)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (UPPER(#{item.userCreate}), UPPER(#{item.accountId}), #{item.featureCodeId}, #{item.action})
+        </foreach>
+    </insert>-->
+</mapper>

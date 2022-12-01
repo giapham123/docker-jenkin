@@ -5,6 +5,7 @@ export default {
     selectAtLeastToDelete: 'Please select at least one item to delete'
   },
   button: {
+    close: 'Close',
     submit: 'Submit',
     cancel: 'Cancel',
     send: 'Send',

@@ -13,6 +13,3 @@ export const SET_EXPIRES = 'SET_EXPIRES';
 export const SET_MESSAGE = 'SET_MESSAGE';
 export const USER_PERMISSION = 'USER_PERMISSION';
 export const NEED_CHANGE_PASS = 'NEED_CHANGE_PASS';
-export const IS_LOG_OUT = 'IS_LOG_OUT';
-export const RE_LOAD_PAGE = 'RE_LOAD_PAGE';
-export const CALL_SERVER_ACTION = 'CALL_SERVER_ACTION';

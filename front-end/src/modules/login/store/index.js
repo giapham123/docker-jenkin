@@ -1,12 +1,4 @@
-/*
- * @Author: Khang.Dong
- * @Email: khang.dong@dounets.com
- * @Date: 2018-10-02 09:58:06
- * @Last Modified by:   Khang.Dong
- * @Last Modified time: 2018-10-02 09:58:06
- */
 import {
-  IS_LOG_OUT,
   SET_USER,
   AUTH_SUCCESS,
   AUTH_ERROR,
@@ -14,11 +6,8 @@ import {
   SET_EXPIRES,
   SET_MESSAGE,
   USER_PERMISSION,
-  NEED_CHANGE_PASS,
-  CALL_SERVER_ACTION
+  NEED_CHANGE_PASS
 } from './types';
-
-// import menus from './menus';
 
 import * as getters from './getters';
 import * as actions from './actions';
@@ -34,9 +23,7 @@ const state = {
   expires_in: 3600,
   message: '',
   user_permission: JSON.parse(localStorage.getItem(PERMISSIONS)),
-  is_default_password: false,
-  is_log_out: false,
-  is_active_call_server: false
+  is_default_password: false
 };
 
 const mutations = {
@@ -72,12 +59,6 @@ const mutations = {
 
   [NEED_CHANGE_PASS](state, flag) {
     state.is_default_password = flag;
-  },
-  [IS_LOG_OUT](state, flag) {
-    state.is_log_out = flag;
-  },
-  [CALL_SERVER_ACTION](state, flag) {
-    state.is_active_call_server = flag;
   }
 };
 

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.acctmanagement.mappers.DepartmentMapper">
+    <resultMap id="DepartmentServiceMap" type="Department">
+        <id column="departID" property="departID"/>
+        <result column="ID" property="id"></result>
+        <result column="NAME" property="name"></result>
+        <result column="ISORDER" property="isOrder"></result>
+        <result column="TABLE" property="table"></result>
+        <result column="DEPARTMENT_ID" property="departmentID"></result>
+    </resultMap>
+
+    <select id="getAllDepartment" resultMap="DepartmentServiceMap">
+        SELECT
+        ID,
+        NAME,
+        ISORDER,
+        "TABLE",
+        DEPARTMENT_ID
+        FROM
+        MAACC.DEPARTMENT
+        WHERE "TABLE" IS NOT NULL
+    </select>
+
+    <select id="getDepartmentByID" parameterType="String" resultMap="DepartmentServiceMap">
+        SELECT
+        ID,
+        NAME,
+        ISORDER,
+        "TABLE",
+        DEPARTMENT_ID
+        FROM
+        MAACC.DEPARTMENT
+        WHERE DEPARTMENT_ID = #{departID}
+    </select>
+
+
+    <insert id="insDepartment" parameterType="Department"   >
+        INSERT INTO MAACC.DEPARTMENT
+        (NAME, ISORDER, "TABLE", DEPARTMENT_ID)
+        VALUES
+        ( #{name},#{isOrder} , #{table}, #{departmentID})
+    </insert>
+
+    <update id="updDepartment" parameterType="Department" >
+        UPDATE
+        MAACC.DEPARTMENT
+        SET
+        NAME = #{name},
+        ISORDER =#{isOrder} ,
+        "TABLE" = #{table}
+        WHERE DEPARTMENT_ID = #{departmentID}
+    </update>
+
+    <delete id="delDepartment" parameterType="Department" >
+        DELETE FROM MAACC.DEPARTMENT WHERE DEPARTMENT_ID = #{departmentID}
+    </delete>
+
+    <select id="getDepartmentByAccountId" resultMap="DepartmentServiceMap">
+        SELECT
+            B.ID,
+            B.NAME,
+            B."TABLE",
+            B.DEPARTMENT_ID
+        FROM
+            MAACC.ACCOUNTINFO A,
+            MAACC.DEPARTMENT B
+        WHERE
+            A.DEPARTMENT_ID = B.DEPARTMENT_ID
+            AND A.ACCOUNTID = #{accountId}
+    </select>
+
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.acctmanagement.mappers.BranchMapper">
+    <resultMap id="BranchServiceMap" type="Branch">
+        <result column="BRANCH_ID" property="branchId"></result>
+        <result column="NAME" property="branchName"></result>
+        <result column="ADDRESS" property="address"></result>
+        <result column="PHONE" property="phone"></result>
+        <result column="CITYID" property="cityId"></result>
+        <result column="DISTRICTID" property="districtId"></result>
+    </resultMap>
+
+    <resultMap id="RequestTypeMap" type="RequestType">
+        <result column="REQUEST_TYPE" property="requestId"></result>
+        <result column="REQUEST_NAME" property="requestName"></result>
+    </resultMap>
+
+    <select id="getAllBranch" resultMap="BranchServiceMap">
+        SELECT BRANCH_ID,
+               NAME,
+               ADDRESS,
+               PHONE,
+               CITYID,
+               DISTRICTID
+        FROM MAACC.BRANCH
+        ORDER BY NAME
+    </select>
+
+    <select id="getAllRequestType" resultMap="RequestTypeMap">
+        SELECT
+            ID,
+            REQUEST_TYPE,
+            REQUEST_NAME
+        FROM
+            MAACC.REQUEST_TYPE
+        WHERE
+            IS_ACTIVE =1
+        ORDER BY ID
+    </select>
+
+</mapper>

@@ -1,45 +1,47 @@
 <template>
-  <v-content>
-    <v-container fluid fill-height>
-      <v-layout align-center justify-center>
-        <v-flex xs12 sm8 md4 lg4>
-          <v-card class="elevation-12">
-            <v-toolbar dark color="primary">
-              <v-toolbar-title>Forgot Password</v-toolbar-title>
-            </v-toolbar>
-            <v-card-text>
-              <v-form ref="form" lazy-validation onsubmit="return false;">
-                <p class="text-sm-left">
-                  Enter your email address and we'll sent you a link to reset
-                  your password
-                </p>
-                <v-text-field
-                  ref="email"
-                  v-model="user.email"
-                  :rules="usernameRules"
-                  type="email"
-                  prepend-icon="email"
-                  label="Email"
-                  required
-                  autofocus
-                  v-on:keyup.13="subSentEmail"
-                />
-                <v-btn
-                  color="primary"
-                  primary
-                  large
-                  block
-                  @click="subSentEmail"
-                >
-                  Submit
-                </v-btn>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-content>
+  <v-app id="register" class="dark">
+    <v-content>
+      <v-container fluid fill-height>
+        <v-layout align-center justify-center>
+          <v-flex xs12 sm8 md4 lg4>
+            <v-card class="elevation-12">
+              <v-toolbar dark color="primary">
+                <v-toolbar-title>Forgot Password</v-toolbar-title>
+              </v-toolbar>
+              <v-card-text>
+                <v-form ref="form" lazy-validation onsubmit="return false;">
+                  <p class="text-sm-left">
+                    Enter your email address and we'll sent you a link to reset
+                    your password
+                  </p>
+                  <v-text-field
+                    ref="email"
+                    v-model="user.email"
+                    :rules="usernameRules"
+                    type="email"
+                    prepend-icon="email"
+                    label="Email"
+                    required
+                    autofocus
+                    v-on:keyup.13="subSentEmail"
+                  />
+                  <v-btn
+                    color="primary"
+                    primary
+                    large
+                    block
+                    @click="subSentEmail"
+                  >
+                    Submit
+                  </v-btn>
+                </v-form>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
 
 <script>

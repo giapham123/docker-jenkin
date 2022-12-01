@@ -5,7 +5,7 @@
         <v-layout class="header white--text no_margin">
           <v-flex md5>
             <v-card-title class="white--text title">
-              Information Account Profile
+              Account Profile
             </v-card-title>
           </v-flex>
           <v-flex md7>
@@ -23,105 +23,45 @@
         <v-card-text class="body overflow_hidden">
           <v-card class="no_shaddow">
             <v-container grid-list-md>
-              <v-layout row wrap>
-                <v-flex md4>
-                  <v-text-field
-                    v-model="account.username"
-                    prepend-icon="perm_identity"
-                    label="User Name"
-                    readonly
-                  />
-                </v-flex>
-                <v-flex md8>
-                  <v-text-field
-                    v-model="account.fullname"
-                    label="Full Name"
-                    readonly
-                  />
-                </v-flex>
-              </v-layout>
-              <v-layout row wrap>
-                <v-flex md12>
-                  <v-text-field
-                    ref="password"
-                    v-model="account.password"
-                    :rules="passwordRules"
-                    type="password"
-                    label="Password"
-                    prepend-icon="lock"
-                    required
-                    @keypress.enter="handleChangePassword"
-                  />
-                </v-flex>
-              </v-layout>
+              <v-flex xs12>
+                <v-text-field
+                  v-model="account.username"
+                  prepend-icon="perm_identity"
+                  label="User Name"
+                  readonly
+                />
 
-              <v-layout row wrap>
-                <v-flex md12>
-                  <v-text-field
-                    ref="newPassword"
-                    v-model="account.newPassword"
-                    :rules="newPasswordRules"
-                    type="password"
-                    label="New Password"
-                    prepend-icon="lock"
-                    required
-                    @keypress.enter="handleChangePassword"
-                  />
-                </v-flex>
-              </v-layout>
-
-              <v-layout row wrap>
-                <v-flex md12>
-                  <v-text-field
-                    ref="confirmedPassword"
-                    v-model="account.confirmedPassword"
-                    :rules="confirmRules"
-                    type="password"
-                    label="Confirm Password"
-                    prepend-icon="lock"
-                    required
-                    @keypress.enter="handleChangePassword"
-                  />
-                </v-flex>
-              </v-layout>
-              <v-layout row wrap>
-                <v-flex md4>
-                  <v-text-field
-                    v-model="account.group"
-                    label="Group"
-                    readonly
-                  />
-                </v-flex>
-                <v-flex md4>
-                  <v-text-field v-model="account.team" label="Team" readonly />
-                </v-flex>
-                <v-flex md4>
-                  <v-text-field
-                    v-model="account.department"
-                    label="Department"
-                    readonly
-                  />
-                </v-flex>
-              </v-layout>
-              <v-layout row wrap>
-                <v-flex md4>
-                  <v-text-field
-                    v-model="account.level"
-                    label="Level"
-                    readonly
-                  />
-                </v-flex>
-                <v-flex md4>
-                  <v-text-field v-model="account.area" label="Area" readonly />
-                </v-flex>
-                <v-flex md4>
-                  <v-text-field
-                    v-model="account.positionCompanyId"
-                    label="Position Company"
-                    readonly
-                  />
-                </v-flex>
-              </v-layout>
+                <v-text-field
+                  ref="password"
+                  v-model="account.password"
+                  :rules="passwordRules"
+                  type="password"
+                  label="Password"
+                  prepend-icon="lock"
+                  required
+                  @keypress.enter="handleChangePassword"
+                />
+                <v-text-field
+                  ref="newPassword"
+                  v-model="account.newPassword"
+                  :rules="newPasswordRules"
+                  type="password"
+                  label="New Password"
+                  prepend-icon="lock"
+                  required
+                  @keypress.enter="handleChangePassword"
+                />
+                <v-text-field
+                  ref="confirmedPassword"
+                  v-model="account.confirmedPassword"
+                  :rules="confirmRules"
+                  type="password"
+                  label="Confirm Password"
+                  prepend-icon="lock"
+                  required
+                  @keypress.enter="handleChangePassword"
+                />
+              </v-flex>
             </v-container>
           </v-card>
         </v-card-text>
@@ -148,14 +88,7 @@ export default {
         username: '',
         password: '',
         newPassword: '',
-        comfirmedPassword: '',
-        fullname: '',
-        group: '',
-        level: '',
-        positionCompanyId: '',
-        team: '',
-        department: '',
-        area: ''
+        comfirmedPassword: ''
       },
       valid: true,
 
@@ -214,13 +147,6 @@ export default {
 
     loadData() {
       this.account.username = this.me.account_id;
-      this.account.fullname = this.me.fullname;
-      this.account.area = this.me.area;
-      this.account.department = this.me.department;
-      this.account.group = this.me.group;
-      this.account.level = this.me.level;
-      this.account.positionCompanyId = this.me.positionCompanyId;
-      this.account.team = this.me.team;
     },
 
     validPassword() {

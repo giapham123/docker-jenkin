@@ -1,0 +1,886 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.acctmanagement.mappers.AccountInfoSimMapper">
+    <resultMap id="AccountInfoServiceMap" type="AccountInfo">
+        <result column="ID" property="id"></result>
+        <result column="ACCOUNTID" property="accountId"></result>
+        <result column="PASSWORD" property="password"></result>
+        <result column="ISBLOCKED" property="isBlocked"></result>
+        <result column="ISDELETED" property="isDeleted"></result>
+        <result column="ISSTATUS" property="isStatus"></result>
+        <result column="ISADMIN" property="isAdmin"></result>
+        <result column="ACCESSTOKEN" property="accessToken"></result>
+        <result column="ACCESSTOKENEXPIRED" property="accessTokenExpired"></result>
+        <result column="GENERATEKEY" property="generateKey"></result>
+        <result column="PERSONALID" property="personalId"></result>
+        <result column="DEPARTMENT_ID" property="departmentId"></result>
+        <result column="GROUPUSER_ID" property="groupUserId"></result>
+
+        <result column="ACCOUNT_NAME" property="fullName"></result>
+        <result column="DEPARTMENT_NAME" property="departmentName"></result>
+        <result column="MAFCCODE" property="mafcCode"></result>
+        <result column="TABLE_DEPARTMENT" property="tableDepartment"></result>
+
+    </resultMap>
+
+    <resultMap id="AccountInfoSearchServiceMap" type="AccountInfoSearch">
+        <result column="ID" property="id"></result>
+        <result column="ACCOUNTID" property="accountId"></result>
+        <result column="DEPARTMENT_ID" property="departmentId"></result>
+        <result column="NAME" property="departmentName"></result>
+        <result column="TABLE_DEPARTMENT" property="tableDepartment"></result>
+    </resultMap>
+
+    <resultMap id="AccountInfoDetailMap" type="AccountInfoDetail">
+        <result column="ID" property="id"></result>
+        <result column="ACCOUNTID" property="accountId"></result>
+        <result column="REQUEST_ID" property="requestId"></result>
+        <result column="PASSWORD" property="password"></result>
+        <result column="ISBLOCKED" property="isBlocked"></result>
+        <result column="ISDELETED" property="isDeleted"></result>
+        <result column="ISSTATUS" property="isStatus"></result>
+        <result column="ISADMIN" property="isAdmin"></result>
+        <result column="ACCESSTOKEN" property="accessToken"></result>
+        <result column="ACCESSTOKENEXPIRED" property="accessTokenExpired"></result>
+        <result column="GENERATEKEY" property="generateKey"></result>
+        <result column="PERSONALID" property="personalId"></result>
+        <result column="DEPARTMENT_ID" property="departmentId"></result>
+        <result column="GROUPUSER_ID" property="groupUserId"></result>
+        <result column="ACCOUNT_NAME" property="fullName"></result>
+        <result column="DEPARTMENT_NAME" property="departmentName"></result>
+        <result column="MAFCCODE" property="mafcCode"></result>
+        <result column="TABLE_DEPARTMENT" property="tableDepartment"></result>
+        <result column="EMAIL" property="email"></result>
+        <result column="PHONE" property="deptPhone"></result>
+        <result column="MOBILE" property="mobile"></result>
+        <result column="SUPERVISORID" property="supervisorCode"></result>
+        <result column="PERSONALID" property="personalId"></result>
+        <result column="JOININGDATE" property="joinDate"></result>
+        <result column="AREA" property="area"></result>
+        <result column="POSITIONCOMPANYID" property="position"></result>
+        <result column="GROUP_ACCT" property="group"></result>
+        <result column="BRANCHID" property="branchId"></result>
+        <result column="STAFFTYPE" property="staffType"></result>
+        <result column="TEAM" property="team"></result>
+        <result column="LEVEL_ACCT" property="level"></result>
+        <result column="IS_CHANGE_DEPT" property="isChangeDept"></result>
+        <result column="NEW_DEPT" property="newDept"></result>
+        <result column="BRANCH_NAME" property="branchName"></result>
+        <result column="PASSWORD" property="password"></result>
+        <result column="VERIFY_STATUS" property="verifyStatus"></result>
+        <result column="VERIFY_NOTE" property="verifyNote"></result>
+        <result column="STATUS" property="status"></result>
+        <result column="REQUEST_NAME" property="requestTypeName"></result>
+    </resultMap>
+
+    <resultMap id="AccountPermissionGroupSimFeatureMap" type="AccountPermissionGroupSimFeature">
+        <result column="ID" property="id"></result>
+        <result column="REQUEST_ID" property="requestId"></result>
+        <result column="ACCOUNTID" property="accountId"></result>
+        <result column="REQUESTID" property="requestId"></result>
+        <result column="REQUEST_TIME" property="requestTimeString"></result>
+        <result column="VERIFY_BY" property="verifyBy"></result>
+        <result column="VERIFY_TIME" property="verifyTimeString"></result>
+        <result column="LIST_FEATURE" property="listFeture"></result>
+        <result column="GROUP_NAME" property="groupName"></result>
+        <result column="APPLICATION" property="application"></result>
+        <result column="ACTION_CURRRENT" property="action"></result>
+        <result column="GROUP_ID" property="groupId"></result>
+        <result column="VERIFY_STATUS" property="verifyStatus"></result>
+        <result column="VERIFY_NOTE" property="verifyNote"></result>
+
+    </resultMap>
+
+    <resultMap id="RequestSummaryMap" type="RequestSummary">
+        <result column="REQUEST_ID" property="requestId"></result>
+        <result column="ACCOUNTID" property="accountId"></result>
+        <result column="REQUEST_TYPE" property="requestTypeId"></result>
+        <result column="REQUEST_NAME" property="requestTypeName"></result>
+        <result column="REQUEST_TIME_STRING" property="requestTimeString"></result>
+        <result column="REQUEST_NOTE" property="requestNote"></result>
+        <result column="REQUEST_BY" property="requestBy"></result>
+        <result column="VERIFY_STATUS" property="verifyStatus"></result>
+    </resultMap>
+
+    <select id="getAccountInfo" resultMap="AccountInfoServiceMap">
+        SELECT
+                ID,
+                ACCOUNTID,
+                PASSWORD,
+                ISBLOCKED,
+                ISDELETED,
+                ISSTATUS,
+                ISADMIN,
+                ACCESSTOKEN,
+                ACCESSTOKENEXPIRED,
+                GENERATEKEY,
+                PERSONALID,
+                DEPARTMENT_ID,
+                GROUPUSER_ID
+        FROM MAACC."ACCOUNTINFO"
+        WHERE ACCOUNTID = UPPER(#{accountId})
+    </select>
+
+    <select id="getAccountInfoSearch" resultMap="AccountInfoServiceMap">
+        SELECT
+            A.ID,
+            A.ACCOUNTID,
+            A.PASSWORD,
+            A.ISBLOCKED,
+            A.ISDELETED,
+            A.ISSTATUS,
+            A.ISADMIN,
+            A.PERSONALID,
+            A.DEPARTMENT_ID,
+            A.GROUPUSER_ID,
+            A.ACCOUNT_NAME,
+            B.NAME DEPARTMENT_NAME,
+            B."TABLE" TABLE_DEPARTMENT
+        FROM
+            MAACC.ACCOUNTINFO A, MAACC.DEPARTMENT B
+        WHERE 1=1
+        <if test = "accountId != null and !(''.equals(accountId))">
+            AND UPPER(A.ACCOUNTID) = UPPER(#{accountId})
+        </if>
+        <if test = "departmentId != null and !(''.equals(departmentId))">
+            AND A.DEPARTMENT_ID = #{departmentId}
+        </if>
+            AND A.DEPARTMENT_ID = B.DEPARTMENT_ID (+)
+    </select>
+
+    <select id="getAccountInfoRequestDetailDepartment" resultMap="AccountInfoServiceMap">
+        SELECT
+            A.REQUEST_ID,
+            B."TABLE" TABLE_DEPARTMENT
+        FROM
+            MAACC.REQUEST_DETAILS A,
+            MAACC.DEPARTMENT B
+        WHERE
+            A.DEPARTMENTID = B.DEPARTMENT_ID
+            AND REQUEST_ID = #{requestId}
+    </select>
+
+    <select id="getAccountInfoRequestDetailChangeDepartment" resultMap="AccountInfoServiceMap">
+        SELECT
+            A.REQUEST_ID,
+            B."TABLE" TABLE_DEPARTMENT
+        FROM
+            MAACC.REQUEST_DETAILS A,
+            MAACC.DEPARTMENT B
+        WHERE
+            A.NEW_DEPT = B.DEPARTMENT_ID
+            AND REQUEST_ID = #{requestId}
+    </select>
+
+    <select id="getAccountInfoByAcctIdDepartment" resultMap="AccountInfoDetailMap" parameterType="AccountInfoSearch">
+        SELECT
+            A.ID,
+            A.ACCOUNTID,
+            A.PASSWORD,
+            A.ISBLOCKED,
+            A.ISDELETED,
+            DECODE(A.ISSTATUS , NULL, 0, A.ISSTATUS) ISSTATUS,
+            C.ISADMIN,
+            A.DEPARTMENT_ID,
+            A.GROUPUSER_ID,
+            C.FULLNAME ACCOUNT_NAME,
+            B.NAME DEPARTMENT_NAME,
+            C.MAFCCODE,
+            C.EMAIL,
+            C.PHONE,
+            C.MOBILE,
+            C.SUPERVISORID,
+            C.PERSONALID,
+            C.JOININGDATE,
+            C.AREA,
+            C.POSITIONCOMPANYID,
+            C."GROUP" GROUP_ACCT,
+            C.BRANCHID,
+            C.STAFFTYPE,
+            C.TEAM,
+            C."LEVEL" LEVEL_ACCT
+        FROM
+            MAACC.ACCOUNTINFO A, MAACC.DEPARTMENT B , MAACC.${tableDepartment} C
+        WHERE 1=1
+        AND UPPER(A.ACCOUNTID) = UPPER(#{accountId})
+        AND A.DEPARTMENT_ID = B.DEPARTMENT_ID
+        AND A.ACCOUNTID = C.ACCOUNTID
+    </select>
+
+    <select id="getAccountExistRequestDetail" resultMap="AccountInfoServiceMap">
+        SELECT
+            A.REQUEST_ID,
+            A.ACCOUNTID,
+            A.VERIFY_STATUS,
+            B.REQUEST_TYPE
+        FROM
+            MAACC.REQUEST_DETAILS A,
+            MAACC.REQUEST_SUMMARY B
+        WHERE
+            A.ACCOUNTID = UPPER(#{accountId})
+            AND A.REQUEST_ID = B.REQUEST_ID
+            AND B.REQUEST_TYPE = UPPER(#{typeVerifyStatus})
+            AND (A.VERIFY_STATUS NOT IN ('APPROVED', 'REJECTED') OR A.VERIFY_STATUS IS NULL)
+    </select>
+
+    <select id="getAccountExistRequestPermission" resultMap="AccountInfoServiceMap">
+        SELECT
+            A.REQUEST_ID, A.ACCOUNTID, A.VERIFY_STATUS ,
+            A.VERIFY_STATUS AS STATUS_VERIFY_DETAILS, B.REQUEST_TYPE
+        FROM
+            MAACC.REQUEST_PERMISSION A,
+            MAACC.REQUEST_SUMMARY B
+        WHERE
+            A.ACCOUNTID = UPPER(#{accountId})
+            AND A.REQUEST_ID = B.REQUEST_ID
+            AND B.REQUEST_TYPE = UPPER(#{typeVerifyStatus})
+            AND (A.VERIFY_STATUS NOT IN ('APPROVED', 'REJECTED') OR A.VERIFY_STATUS IS NULL)
+    </select>
+
+    <select id="getAccountInfoDepartmentByAcctId" resultMap="AccountInfoServiceMap" parameterType="AccountInfoSearch">
+        SELECT
+            A.ID,
+            A.ACCOUNTID,
+            A.PASSWORD,
+            A.ISBLOCKED,
+            A.ISDELETED,
+            A.ISSTATUS,
+            A.ISADMIN,
+            A.PERSONALID,
+            A.DEPARTMENT_ID,
+            A.GROUPUSER_ID,
+            A.ACCOUNT_NAME,
+            B.NAME
+        FROM
+            MAACC.ACCOUNTINFO A,
+            MAACC.DEPARTMENT B
+        WHERE 1=1
+        AND UPPER(A.ACCOUNTID) = UPPER(#{accountId})
+        AND A.DEPARTMENT_ID = B.DEPARTMENT_ID
+    </select>
+
+    <select id="getAccountInfoByAcctId" resultMap="AccountInfoServiceMap" parameterType="AccountInfo">
+        SELECT ID,
+        ACCOUNTID,
+        PASSWORD,
+        ISBLOCKED,
+        ISDELETED,
+        ISSTATUS,
+        ISADMIN,
+        ACCESSTOKEN,
+        ACCESSTOKENEXPIRED,
+        GENERATEKEY,
+        PERSONALID,
+        DEPARTMENT_ID,
+        GROUPUSER_ID
+        FROM MAACC.ACCOUNTINFO
+        WHERE 1=1
+        <if test = "accountId != null and !(''.equals(accountId))">
+            AND UPPER(ACCOUNTID) = UPPER(#{accountId})
+        </if>
+
+    </select>
+
+    <select id="getListApplicationByDepartment" resultType="String" >
+        SELECT
+            APPLICATION
+        FROM
+            MAACC.APP_DEPT
+        WHERE
+            DEPARTMENT = #{departmentId}
+            AND IS_ACTIVE = 1
+    </select>
+
+    <select id="getGroupFeaturePermision" resultType="HashMap" >
+        SELECT B.APPLICATION, B.CODEID GROUPID, B.NAME GROUPNAME, LISTAGG(D.NAME, ', ') WITHIN GROUP (ORDER BY D.NAME) LIST_FEATURE
+        FROM  MAACC."GROUP" B, MAACC.GROUPFEATURE C, MAACC.FEATURE D
+        WHERE 1= 1
+            AND B.APPLICATION IN
+            <foreach item="appCode" collection="listAppCode" separator="," open="(" close=")">
+                #{appCode}
+            </foreach>
+            AND B.CODEID = C.GROUPID
+            AND C.FEATUREID = D.CODEID
+            GROUP BY B.APPLICATION, B.CODEID, B.NAME
+    </select>
+
+    <insert id="insertAccountInfo" parameterType="AccountInfo">
+        INSERT INTO MAACC.ACCOUNTINFO
+        (
+            ACCOUNTID,
+            PASSWORD,
+            ISBLOCKED,
+            ISDELETED,
+            ISSTATUS,
+            ISADMIN,
+            ACCESSTOKEN,
+            ACCESSTOKENEXPIRED,
+            GENERATEKEY,
+            PERSONALID,
+            DEPARTMENT_ID,
+            GROUPUSER_ID,
+            PWD_UPDATING_LATEST,
+            CREATETIME,
+            IS_CHANGE_PASS,
+            LAST_LOGIN,
+            LAST_LOGOUT,
+            CREATE_BY,
+            ACCOUNT_NAME)
+        VALUES
+        (UPPER(#{accountId}),
+            #{password},
+            #{isBlocked},
+            #{isDeleted},
+            1,
+            #{isAdmin},
+            #{accessToken},
+            #{accessTokenExpired},
+            #{generateKey},
+            #{personalId},
+            #{departmentId},
+            #{groupUserId},
+            null,
+            CURRENT_TIMESTAMP,
+            #{isChangePass},
+            null,
+            null,
+            #{createBy},
+            #{accountName}
+        )
+    </insert>
+
+    <insert id="insertRequestSummary" parameterType="RequestSummary" useGeneratedKeys="true" keyColumn="REQUEST_ID" keyProperty="requestId">
+        INSERT INTO MAACC.REQUEST_SUMMARY
+            (
+            REQUEST_ID,
+            ACCOUNTID,
+            REQUEST_TYPE,
+            REQUEST_NOTE,
+            REQUEST_BY,
+            REQUEST_TIME,
+            VERIFY_STATUS)
+        VALUES(
+            MAACC.SEQ_REQUEST_SUMMARY.NEXTVAL,
+            UPPER(#{accountId}),
+            #{requestTypeId},
+            #{requestNote},
+            #{requestBy},
+            CURRENT_TIMESTAMP,
+            #{verifyStatus})
+    </insert>
+
+
+    <insert id="insertRequestDetailByReqId" parameterType="AccountInfoDetail">
+        INSERT INTO MAACC.REQUEST_DETAILS
+            (REQUEST_ID,
+            ACCOUNTID,
+            ACCOUNT_NAME,
+            PASSWORD,
+            DEPARTMENTID,
+            MAFCCODE,
+            EMAIL,
+            PHONE,
+            MOBILE,
+            "LEVEL",
+            POSITIONCOMPANYID,
+            ISDELETED,
+            JOININGDATE,
+            ENDDATE,
+            STATUS,
+            BRANCHID,
+            SUPERVISORID,
+            ISADMIN,
+            STAFFTYPE,
+            "GROUP",
+            TEAM,
+            AREA,
+            PERSONALID,
+            IS_CHANGE_DEPT,
+            NEW_DEPT)
+        VALUES( #{requestId}, UPPER(#{accountId}), #{fullName}, #{password}, #{departmentId}, #{mafcCode}, #{email}, #{deptPhone}, #{mobile},
+            #{level}, #{position}, null, #{joinDate}, null, #{status}, #{branchId}, #{supervisorCode}, #{isAdmin}, #{staffType}, #{group}, #{team}, #{area}, #{personalId},
+            #{isChangeDept}, #{newDept})
+    </insert>
+
+    <insert id="insertRequestPermissionByReqId">
+        INSERT INTO MAACC.REQUEST_PERMISSION
+            (REQUEST_ID,
+            ACCOUNTID,
+            GROUP_ID,
+            "ACTION")
+        VALUES(
+            #{requestId},
+            UPPER(#{accountId}),
+            #{permission},
+            #{action})
+    </insert>
+
+    <select id="getGroupFeaturePermissionCurrent" resultMap="AccountPermissionGroupSimFeatureMap" >
+        SELECT A.ACCOUNTID,
+            A.GROUPID GROUP_ID,
+            B.VERIFY_BY,
+            B.VERIFY_TIME,
+            D.NAME GROUP_NAME,
+            D.APPLICATION,
+            LISTAGG(E.NAME, ', ') WITHIN GROUP (ORDER BY E.NAME) LIST_FEATURE
+        FROM
+            MAACC.ACCOUNTPERMISSIONGROUPFEATURE A,
+            MAACC.REQUEST_PERMISSION B,
+            MAACC.GROUPFEATURE C,
+            MAACC."GROUP" D,
+            MAACC.FEATURE E
+        WHERE
+            A.ACCOUNTID = UPPER(#{accountId})
+            AND A.REQUESTID = B.REQUEST_ID (+)
+            AND A.GROUPID = B.GROUP_ID (+)
+            AND A.GROUPID = C.GROUPID
+            AND A.GROUPID = D.CODEID
+            AND C.FEATUREID = E.CODEID
+        GROUP BY
+            A.ACCOUNTID,
+            A.GROUPID,
+            B.VERIFY_BY,
+            B.VERIFY_TIME,
+            D.NAME,
+            D.APPLICATION
+    </select>
+
+
+    <select id="getGroupPermissionCurrent" resultType="String" >
+        SELECT GROUPID
+        FROM MAACC.ACCOUNTPERMISSIONGROUPFEATURE
+        WHERE ACCOUNTID = UPPER(#{accountId})
+    </select>
+
+    <!--VERIFY-->
+    <select id="getRequestSummaryInVerifyTicket" resultMap="RequestSummaryMap" >
+        SELECT
+            A.REQUEST_ID,
+            A.ACCOUNTID,
+            A.REQUEST_TYPE ,
+            A.REQUEST_NOTE, A.REQUEST_BY,
+            TO_CHAR(A.REQUEST_TIME, 'MM/DD/YYYY HH24:MI') REQUEST_TIME_STRING,
+            A.VERIFY_STATUS,
+            B.REQUEST_NAME
+        FROM
+            MAACC.REQUEST_SUMMARY A,
+            MAACC.REQUEST_TYPE B
+        WHERE 1= 1
+        <if test = "accountId != null and !(''.equals(accountId))">
+            AND UPPER(A.ACCOUNTID) LIKE '%' || UPPER(#{accountId}) ||'%'
+        </if>
+        <if test = "requestId != null and !(''.equals(requestId))">
+            AND A.REQUEST_ID = #{requestId}
+        </if>
+            AND A.REQUEST_TYPE = B.REQUEST_TYPE
+            AND A.VERIFY_STATUS IN ('REQUESTED', 'INPROGRESS')
+
+        <if test = "requestType != null and !(''.equals(requestType))">
+            AND A.REQUEST_TYPE = #{requestType}
+            <!--<foreach item="requestTypeItem" collection="requestType" separator="," open="(" close=")">-->
+            <!--</foreach>-->
+        </if>
+        ORDER BY A.REQUEST_ID DESC
+    </select>
+
+    <select id="getRequestDetailByRequestIdVerifyTicket" resultMap="AccountInfoDetailMap" >
+        SELECT
+            B.ID,
+            B.REQUEST_ID, B.ACCOUNTID,
+            D.NAME DEPARTMENT_NAME,
+            B.DEPARTMENTID,
+            B.ACCOUNT_NAME,
+            B.PASSWORD,
+            B.DEPARTMENTID DEPARTMENT_ID,
+            B.MAFCCODE, B.EMAIL, B.PHONE,
+            B.MOBILE, B."LEVEL" LEVEL_ACCT,
+            B.POSITIONCOMPANYID,
+            B.JOININGDATE, B.ENDDATE, B.STATUS,
+            B.BRANCHID, B.SUPERVISORID, B.ISADMIN,
+            B.STAFFTYPE, B."GROUP" GROUP_ACCT,
+            B.TEAM, B.AREA, B.PERSONALID, B.IS_CHANGE_DEPT,
+            B.NEW_DEPT,
+            E.NAME BRANCH_NAME,
+            B.PASSWORD,
+            C.REQUEST_NAME,
+            A.REQUEST_BY
+        FROM
+            MAACC.REQUEST_SUMMARY A ,
+            MAACC.REQUEST_DETAILS B,
+            MAACC.REQUEST_TYPE C,
+            MAACC.DEPARTMENT D,
+            MAACC.BRANCH E
+        WHERE 1=1
+            AND A.REQUEST_ID = #{requestId}
+            AND A.REQUEST_ID = B.REQUEST_ID
+            AND A.REQUEST_TYPE = C.REQUEST_TYPE
+            AND B.DEPARTMENTID = D.DEPARTMENT_ID(+)
+            AND B.BRANCHID = E.BRANCH_ID (+)
+    </select>
+
+    <select id="getGroupFeatureRequestPermission" resultMap="AccountPermissionGroupSimFeatureMap" >
+        SELECT
+            A.ID,
+            A.REQUEST_ID,
+            A.ACCOUNTID,
+            A.GROUP_ID,
+            B.NAME GROUP_NAME,
+            A."ACTION" ACTION_CURRRENT,
+            B.APPLICATION,
+            A.VERIFY_STATUS,
+            A.VERIFY_BY,
+            A.VERIFY_TIME,
+            A.VERIFY_NOTE,
+            LISTAGG(E.NAME, ', ') WITHIN GROUP (ORDER BY E.NAME) LIST_FEATURE
+        FROM
+            MAACC.REQUEST_PERMISSION A,
+            MAACC.GROUPFEATURE C,
+            MAACC."GROUP" B,
+            MAACC.FEATURE E
+        WHERE
+            A.REQUEST_ID = #{requestId}
+            AND A.GROUP_ID = C.GROUPID
+            AND A.GROUP_ID = B.CODEID
+            AND C.FEATUREID = E.CODEID
+            <if test = "validateStatus != null and !(''.equals(validateStatus))">
+                AND( A.VERIFY_STATUS NOT IN ('APPROVED', 'REJECTED') OR A.VERIFY_STATUS IS NULL)
+            </if>
+        GROUP BY
+            A.ID, A.REQUEST_ID,
+            A.ACCOUNTID, A.GROUP_ID,
+            B.NAME, A."ACTION",
+            B.APPLICATION,
+            A.VERIFY_STATUS,
+            A.VERIFY_BY,
+            A.VERIFY_TIME,
+            A.VERIFY_NOTE
+    </select>
+
+
+    <update id="updateStatusVerifyRequestSummary">
+        UPDATE MAACC.REQUEST_SUMMARY
+        SET VERIFY_STATUS = #{status}
+        WHERE REQUEST_ID = #{requestId}
+    </update>
+
+    <update id="updateVerifyRequestDetail">
+        UPDATE MAACC.REQUEST_DETAILS
+        SET
+            VERIFY_STATUS = #{decision} ,
+            VERIFY_NOTE = #{noteDecision},
+            VERIFY_BY = #{userVerify},
+            <if test = "passwordHash != null and !(''.equals(passwordHash))">
+                PASSWORD = #{passwordHash},
+            </if>
+            VERIFY_TIME = CURRENT_TIMESTAMP
+        WHERE
+            REQUEST_ID = #{requestId}
+            AND ACCOUNTID = #{accountId}
+    </update>
+
+    <insert id="insertAccountInfoDepartment">
+        INSERT INTO MAACC.${tableDepartment}
+            (ACCOUNTID,
+            FULLNAME,
+            EMAIL,
+            PHONE,
+            MOBILE,
+            ISADMIN,
+            ISDELETED,
+            DEPARTMENTID,
+            "LEVEL",
+            SUPERVISORID,
+            STAFFTYPE,
+            "GROUP",
+            TEAM,
+            AREA,
+            STATUS,
+            PERSONALID,
+            POSITIONCOMPANYID,
+            MAFCCODE,
+            JOININGDATE,
+            BRANCHID,
+            CREATEDDATE,
+            CREATEDBY)
+        VALUES(
+            UPPER(#{accountId}),
+            #{fullName},
+            #{email},
+            #{deptPhone},
+            #{mobile},
+            #{isAdmin},
+            #{isDeleted},
+            #{departmentId},
+            #{level},
+            #{supervisorCode},
+            #{staffType},
+            #{group},
+            #{team},
+            #{area},
+            'ACT',
+            #{personalId},
+            #{position},
+            #{mafcCode},
+            #{joinDate},
+            #{branchId},
+            CURRENT_TIMESTAMP,
+            #{userVerify}
+        )
+    </insert>
+
+    <insert id="insertAccountPermissionGroupFeature" parameterType="AccountPermissionGroupSimFeature">
+        INSERT INTO MAACC.ACCOUNTPERMISSIONGROUPFEATURE
+        (ACCOUNTID, GROUPID, REQUESTID)
+        VALUES
+        (UPPER(#{accountId}), UPPER(#{groupId}), #{requestId})
+    </insert>
+
+    <select id="getListRequestDetailProcessing" resultMap="AccountInfoDetailMap" >
+        SELECT ID, REQUEST_ID, ACCOUNTID, ACCOUNT_NAME, VERIFY_STATUS
+        FROM MAACC.REQUEST_DETAILS
+        WHERE 1= 1
+        AND REQUEST_ID=  #{requestId}
+        AND( VERIFY_STATUS NOT IN ('APPROVED', 'REJECTED') OR VERIFY_STATUS IS NULL)
+    </select>
+
+    <select id="getListResetPassRequest" resultMap="AccountInfoDetailMap">
+        SELECT
+            ID,
+            REQUEST_ID,
+            ACCOUNTID,
+            PASSWORD,
+            VERIFY_STATUS,
+            VERIFY_NOTE
+        FROM
+            MAACC.REQUEST_DETAILS
+        WHERE
+            REQUEST_ID = #{requestId}
+    </select>
+
+    <update id="updateResetPasswordAccountInfo" parameterType="AccountInfoResetPass">
+        UPDATE
+            MAACC.ACCOUNTINFO
+        SET
+            PASSWORD           = #{passwordHash},
+            PWD_UPDATING_LATEST= CURRENT_TIMESTAMP,
+            UPDATE_DATE        = CURRENT_TIMESTAMP,
+            UPDATE_BY          = #{updateBy},
+            IS_CHANGE_PASS     = #{isChangePass}
+        WHERE
+            UPPER(ACCOUNTID) = UPPER(#{accountId})
+    </update>
+
+    <select id="getListActiveInactiveRequest" resultMap="AccountInfoDetailMap">
+        SELECT
+            ID,
+            REQUEST_ID,
+            ACCOUNTID,
+            VERIFY_STATUS,
+            VERIFY_NOTE,
+            STATUS
+        FROM
+            MAACC.REQUEST_DETAILS
+        WHERE
+            REQUEST_ID = #{requestId}
+    </select>
+
+    <select id="getListRemoveAccountRequest" resultMap="AccountInfoDetailMap">
+        SELECT
+            REQUEST_ID,
+            ACCOUNTID,
+            VERIFY_STATUS,
+            VERIFY_NOTE,
+            STATUS,
+            DEPARTMENTID DEPARTMENT_ID,
+            NAME DEPARTMENT_NAME
+        FROM
+            MAACC.REQUEST_DETAILS,
+            MAACC.DEPARTMENT
+        WHERE
+            REQUEST_ID = #{requestId}
+            AND DEPARTMENTID = DEPARTMENT_ID
+    </select>
+
+    <update id="updateActiveInactiveAccountInfo">
+        UPDATE
+            MAACC.ACCOUNTINFO
+        SET
+            ISSTATUS           = #{isStatus},
+            UPDATE_DATE        = CURRENT_TIMESTAMP,
+            UPDATE_BY          = #{updateBy}
+            <if test = "isDelete != null and !(''.equals(isDelete))">
+                ,ISDELETED = #{isDelete}
+            </if>
+            <if test = "isStatus != null and !(''.equals(isStatus))">
+                <if test='isStatus == "0"'>
+                    ,PASSWORD = PASSWORD|| '_INACTIVE'
+                </if>
+                <if test='isStatus == "1"'>
+                    ,PASSWORD = REPLACE(PASSWORD, '_INACTIVE', '')
+                </if>
+            </if>
+        WHERE
+            UPPER(ACCOUNTID) = UPPER(#{accountId})
+    </update>
+
+    <delete id="removeAccountInfo">
+        DELETE FROM MAACC.ACCOUNTINFO
+        WHERE
+        ACCOUNTID = UPPER(#{accountId})
+    </delete>
+
+    <update id="updateAccountInfo">
+        UPDATE
+            MAACC.ACCOUNTINFO
+        SET
+            DEPARTMENT_ID      = #{departmentId},
+            UPDATE_DATE        = CURRENT_TIMESTAMP,
+            UPDATE_BY          = #{updateBy}
+            <if test = "isAdmin != null and !(''.equals(isAdmin))">
+                ,ISADMIN = #{isAdmin}
+            </if>
+        WHERE
+            UPPER(ACCOUNTID) = UPPER(#{accountId})
+    </update>
+
+    <update id="updateAccountInfoDepartment">
+        UPDATE
+            MAACC.${tableDepartment}
+        SET
+            FULLNAME = #{fullName},
+            EMAIL = #{email},
+            PHONE = #{deptPhone},
+            MOBILE = #{mobile},
+            ISADMIN = #{isAdmin},
+            DEPARTMENTID = #{departmentId},
+            "LEVEL" =#{level},
+            SUPERVISORID = #{supervisorCode},
+            STAFFTYPE = #{staffType},
+            "GROUP" = #{group},
+            TEAM = #{team},
+            AREA = #{area},
+            STATUS = #{status},
+            PERSONALID = #{personalId},
+            POSITIONCOMPANYID= #{position},
+            MAFCCODE = #{mafcCode},
+            JOININGDATE = #{joinDate},
+            BRANCHID = #{branchId},
+            MODIFIEDDATE = CURRENT_TIMESTAMP,
+            MODIFIEDBY = #{userVerify}
+        WHERE
+            ACCOUNTID = UPPER(#{accountId})
+    </update>
+
+    <update id="updateStatusAccountInfoDepartment">
+        UPDATE
+            MAACC.${tableDepartment}
+        SET
+            STATUS = #{status},
+            MODIFIEDDATE = CURRENT_TIMESTAMP,
+            MODIFIEDBY = #{updateBy}
+            <if test = "isDelete != null and !(''.equals(isDelete))">
+                ,ISDELETED = #{isDelete},
+                ENDDATE = CURRENT_TIMESTAMP
+            </if>
+        WHERE
+            ACCOUNTID = UPPER(#{accountId})
+    </update>
+
+    <update id="updateVerifyRequestPermission">
+        UPDATE
+            MAACC.REQUEST_PERMISSION
+        SET
+            VERIFY_STATUS = #{verifyStatus},
+            VERIFY_BY = #{verifyBy},
+            VERIFY_NOTE = #{verifyNote},
+            VERIFY_TIME = CURRENT_TIMESTAMP
+        WHERE
+            REQUEST_ID = #{requestId}
+            AND ACCOUNTID = UPPER(#{accountId})
+            AND GROUP_ID = #{groupId}
+    </update>
+
+    <update id="updateVerifyRequestPermissionAllGroup">
+        UPDATE
+        MAACC.REQUEST_PERMISSION
+        SET
+            VERIFY_STATUS = #{verifyStatus},
+            VERIFY_BY = #{verifyBy},
+            VERIFY_NOTE = #{verifyNote},
+            VERIFY_TIME = CURRENT_TIMESTAMP
+        WHERE
+            REQUEST_ID = #{requestId}
+            AND ACCOUNTID = UPPER(#{accountId})
+    </update>
+
+
+    <insert id="insertAccountInfoPermissionGroupFeature">
+        INSERT INTO MAACC.ACCOUNTPERMISSIONGROUPFEATURE
+            (ACCOUNTID,
+            GROUPID,
+            FEATUREID,
+            REQUESTID)
+        VALUES
+            (UPPER(#{accountId}),
+            #{groupId},
+            '',
+            #{requestId})
+    </insert>
+
+    <delete id="deleteAccountInfoPermissionGroupFeature" parameterType="AccountPermissionGroupSimFeature">
+        DELETE FROM MAACC.ACCOUNTPERMISSIONGROUPFEATURE
+        WHERE
+            ACCOUNTID = UPPER(#{accountId})
+            AND GROUPID = #{groupId}
+    </delete>
+
+    <delete id="deleteAccountInfoPermissionAllGroupFeature">
+        DELETE FROM MAACC.ACCOUNTPERMISSIONGROUPFEATURE
+        WHERE
+            ACCOUNTID = UPPER(#{accountId})
+    </delete>
+
+    <select id="getListRequestPermissionProcessing" resultMap="AccountPermissionGroupSimFeatureMap">
+        SELECT
+        ID,
+        REQUEST_ID,
+        ACCOUNTID,
+        VERIFY_STATUS,
+        VERIFY_NOTE,
+        STATUS
+        FROM
+        MAACC.REQUEST_DETAILS
+        WHERE
+        REQUEST_ID = #{requestId}
+    </select>
+
+    <select id="getListAccountInfoReview" resultMap="AccountInfoServiceMap">
+        SELECT
+            A.ID,
+            A.ACCOUNTID,
+            A.PASSWORD,
+            A.ISBLOCKED,
+            A.ISDELETED,
+            A.ISSTATUS,
+            A.ISADMIN,
+            A.PERSONALID,
+            A.DEPARTMENT_ID,
+            A.GROUPUSER_ID,
+            A.ACCOUNT_NAME,
+            B.NAME DEPARTMENT_NAME,
+            B."TABLE" TABLE_DEPARTMENT
+        FROM
+            MAACC.ACCOUNTINFO A,
+            MAACC.DEPARTMENT B
+        WHERE 1=1
+            <if test = "accountId != null and !(''.equals(accountId))">
+                AND UPPER(A.ACCOUNTID) = UPPER(#{accountId})
+            </if>
+            AND A.DEPARTMENT_ID IN
+            <foreach item="departmentId" collection="listDepartment" separator="," open="(" close=")">
+                #{departmentId}
+            </foreach>
+            AND A.DEPARTMENT_ID = B.DEPARTMENT_ID (+)
+    </select>
+
+</mapper>

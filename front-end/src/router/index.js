@@ -6,7 +6,7 @@ import Router from 'vue-router';
 import NProgress from 'nprogress';
 
 import store from 'store';
-import {BASE_ROUTES, TERMI_ROUTES} from './routes';
+import routes from './routes';
 import { IS_DEFAULT_PASSWORD } from 'core/constants';
 
 Vue.use(Router);
@@ -14,11 +14,11 @@ Vue.use(Router);
 const router = new Router({
   mode: 'history',
   linkActiveClass: 'open active',
-  routes: [...BASE_ROUTES, ...TERMI_ROUTES]
+  routes
 });
 
 router.beforeEach(async (to, from, next) => {
-  document.title = to.meta.title || 'Accounting Module';
+  document.title = to.meta.title || 'Mirae Home System';
   NProgress.start();
   const isLoginPage = to.matched.some(p => p.path.indexOf('/login') === 0);
 

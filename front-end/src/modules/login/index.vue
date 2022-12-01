@@ -1,56 +1,57 @@
 <template>
-  <v-content class="home-app-wrapper">
-    <v-container fluid fill-height>
-      <v-layout align-center justify-center>
-        <v-flex xs12 sm8 md4 lg4>
-          <v-card class="elevation-12">
-            <v-toolbar dark color="#00695c">
-              <v-toolbar-title class="display-1">
-                ACCOUNTING MODULE
-              </v-toolbar-title>
-            </v-toolbar>
-            <v-card-text>
-              <v-form ref="form" lazy-validation>
-                <v-text-field
-                  ref="username"
-                  v-model="user.username"
-                  :rules="usernameRules"
-                  prepend-icon="account_box"
-                  label="User Name"
-                  required
-                  autofocus
-                  v-on:keyup.13="subLogin"
-                />
-                <v-text-field
-                  ref="password"
-                  v-model="user.password"
-                  :rules="passwordRules"
-                  type="password"
-                  label="Password"
-                  prepend-icon="lock"
-                  required
-                  @keypress.enter="subLogin"
-                />
-                <v-alert
-                  :value="!hasLoadedOnce"
-                  color="error"
-                  icon="warning"
-                  outline
-                >
-                  {{ message }}
-                </v-alert>
-                <v-btn
-                  :loading="loading"
-                  :disabled="loading"
-                  color="rgb(0, 150, 136)"
-                  class="white--text"
-                  large
-                  block
-                  @click="subLogin"
-                >
-                  Login
-                </v-btn>
-                <!--<v-layout wrap>
+  <v-app id="login" class="dark">
+    <v-content class="home-app-wrapper">
+      <v-container fluid fill-height>
+        <v-layout align-center justify-center>
+          <v-flex xs12 sm8 md4 lg4>
+            <v-card class="elevation-12">
+              <v-toolbar dark color="#00695c">
+                <v-toolbar-title>
+                  ACCOUNT MANAGEMENT
+                </v-toolbar-title>
+              </v-toolbar>
+              <v-card-text>
+                <v-form ref="form" lazy-validation>
+                  <v-text-field
+                    ref="username"
+                    v-model="user.username"
+                    :rules="usernameRules"
+                    prepend-icon="account_box"
+                    label="User Name"
+                    required
+                    autofocus
+                    v-on:keyup.13="subLogin"
+                  />
+                  <v-text-field
+                    ref="password"
+                    v-model="user.password"
+                    :rules="passwordRules"
+                    type="password"
+                    label="Password"
+                    prepend-icon="lock"
+                    required
+                    @keypress.enter="subLogin"
+                  />
+                  <v-alert
+                    :value="!hasLoadedOnce"
+                    color="error"
+                    icon="warning"
+                    outline
+                  >
+                    {{ message }}
+                  </v-alert>
+                  <v-btn
+                    :loading="loading"
+                    :disabled="loading"
+                    color="rgb(0, 150, 136)"
+                    class="white--text"
+                    large
+                    block
+                    @click="subLogin"
+                  >
+                    Login
+                  </v-btn>
+                  <!--<v-layout wrap>
                     <v-flex>
                       <v-btn flat color="#00695c" @click="subRegister">
                         Register
@@ -62,13 +63,14 @@
                       </v-btn>
                     </v-flex>
                   </v-layout>-->
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-content>
+                </v-form>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
 
 <script>

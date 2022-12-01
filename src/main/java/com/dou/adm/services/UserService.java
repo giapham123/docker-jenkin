@@ -4,7 +4,6 @@ import com.dou.adm.mappers.UserMapper;
 import com.dou.adm.models.Feature;
 import com.dou.adm.models.Permission;
 import com.dou.adm.models.User;
-import com.dou.adm.models.UserProfiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,17 +60,6 @@ public class UserService  {
         return permissions;
     }
 
-    public UserProfiles retrieveUserProfile(String targetTable, String accountId) {
-        try {
-            if (StringUtils.hasText(targetTable)) {
-                return this.mapper.retrieveUserProfile(targetTable, accountId);
-            }
-        } catch (Exception e) {
-            LOGGER.error(String.format("Error occurred while trying to retrieve UserProfile of %s from Database", accountId), e);
-        }
-        return null;
-    }
-
     public int changePassword(String accountId, String password ){
         int result = 0;
         try {
@@ -81,5 +69,4 @@ public class UserService  {
         }
         return result;
     }
-
 }

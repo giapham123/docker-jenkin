@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.staff_info.mappers.AccountInfoDrsDetailMapper">
+
+    <resultMap id="AccountInfoDrsDetailServiceMap" type="AccountInfoDrsDetail">
+        <result column="ID" property="id"></result>
+        <result column="ACCOUNTID" property="accountId"></result>
+        <result column="BIRTHDAY" property="birthday"></result>
+        <result column="GENDER" property="gender"></result>
+        <result column="ID_NO" property="idNo"></result>
+        <result column="ID_DATE" property="idDate"></result>
+        <result column="PLACEID" property="placeId"></result>
+        <result column="PERMANENTADD" property="permanentAdd"></result>
+        <result column="CURRENTADD" property="currentAdd"></result>
+        <result column="TAXCODE" property="taxCode"></result>
+        <result column="FULLNAME" property="fullName"></result>
+        <result column="USERUPDATE" property="userUpdate"></result>
+        <result column="DATETIME" property="dateTime"></result>
+
+    </resultMap>
+
+    <select id="getInfo" resultMap="AccountInfoDrsDetailServiceMap" parameterType="AccountInfoDrsDetail">
+        SELECT
+                A.ID,
+                A.ACCOUNTID,
+                B.FULLNAME,
+                A.BIRTHDAY,
+                A.GENDER,
+                A.ID_NO,
+                A.ID_DATE,
+                A.PLACEID,
+                A.PERMANENTADD,
+                A.CURRENTADD,
+                A.TAXCODE
+        FROM MAACC.ACCOUNTINFODRSDETAIL A,
+              MAACC.ACCOUNTINFODRS B
+        WHERE 1 = 1
+        AND A.ACCOUNTID = B.ACCOUNTID
+        <if test="accountId != null and !accountId.equals('')">
+            AND UPPER(A.ACCOUNTID) like ('%' || UPPER(#{accountId}) || '%')
+        </if>
+
+    </select>
+
+    <select id="getAccount" resultMap="AccountInfoDrsDetailServiceMap">
+        SELECT ACCOUNTID FROM MAACC.ACCOUNTINFODRSDETAIL
+        WHERE ACCOUNTID = UPPER(#{accountId})
+    </select>
+
+    <select id="checkExistAccountId" resultMap="AccountInfoDrsDetailServiceMap">
+        SELECT ACCOUNTID FROM MAACC.ACCOUNTINFODRSDETAIL
+        WHERE ACCOUNTID = UPPER(#{accountId})
+    </select>
+
+    <update id="insertInfo" parameterType="AccountInfoDrsDetail">
+        INSERT INTO MAACC.ACCOUNTINFODRSDETAIL
+          (ACCOUNTID)
+        VALUES
+          (UPPER(#{accountId}))
+
+    </update>
+
+    <update id="updateInfo" parameterType="AccountInfoDrsDetail">
+        UPDATE MAACC.ACCOUNTINFODRSDETAIL
+        SET
+            BIRTHDAY = #{birthday},
+            GENDER = #{gender},
+            ID_NO = #{idNo},
+            ID_DATE = #{idDate},
+            PLACEID = #{placeId},
+            PERMANENTADD = #{permanentAdd},
+            CURRENTADD = #{currentAdd},
+            TAXCODE = #{taxCode},
+            USERUPDATE = #{userUpdate},
+            DATETIME = #{dateTime}
+       WHERE ACCOUNTID = #{accountId}
+
+    </update>
+
+</mapper>

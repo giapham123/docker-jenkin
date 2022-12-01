@@ -14,7 +14,6 @@ module.exports = {
   parallel: undefined,
   css: undefined,
   configureWebpack: {
-    devtool: 'source-map',
     resolve: {
       alias: {
         '@': resolve('src'),
