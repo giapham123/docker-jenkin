@@ -4686,6 +4686,7 @@ public class FTPService implements FTPServiceInterface {
         }
         catch (Exception ex)
         {
+            ex.printStackTrace();
             return String.format("File error: %s | %s", ftpFilePath.split("/")[2].trim(), ex.getMessage());
         }
         finally
@@ -4700,6 +4701,7 @@ public class FTPService implements FTPServiceInterface {
             }
             catch (IOException ex)
             {
+                ex.printStackTrace();
                 return String.format("File error: %s | %s", ftpFilePath.split("/")[2].trim(), ex.getMessage());
             }
         }
