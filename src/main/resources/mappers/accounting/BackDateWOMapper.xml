@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.BackDateWOMapper">
+    <select id="getDataBackDate" resultType="BackDateWOModel">
+        SELECT
+        a.agreementid agreementId,
+        TO_CHAR(a.backdate, 'MM/DD/YYYY') AS backDt ,
+        TO_CHAR(a.run_date, 'MM/DD/YYYY') AS uptDt ,
+        a.runyn AS runYn,
+        a.error_msg AS errorMsg,
+        a.USER_MAKER userLogin
+        FROM
+        sqlserver1.mafc_sap_ids_process a
+        WHERE 1=1
+        AND TRUNC(backdate) = TRUNC(#{backDate})
+        <if test="type != null and type != ''">
+            AND type = #{type}
+        </if>
+    </select>
+
+    <select id="processPendingBackDate" parameterType="java.util.Map" statementType="CALLABLE">
+        { call SQLSERVER1.mafc_sap_ids_process_proc(
+        #{curDt,mode=IN, jdbcType=DATE},
+        #{type,mode=IN, jdbcType=VARCHAR},
+        #{usrLg,mode=IN, jdbcType=VARCHAR},
+        #{out,jdbcType=VARCHAR,mode=OUT})
+        }
+    </select>
+</mapper>

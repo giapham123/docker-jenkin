@@ -14,7 +14,6 @@ public class DynamicDataSourceHolder {
     static {
         dataSourceKeys.add("default");
         dataSourceKeys.add("oracle");
-        dataSourceKeys.add("payoo");
     }
 
     public static void setDataSourceKey(String dataSourceKey) {

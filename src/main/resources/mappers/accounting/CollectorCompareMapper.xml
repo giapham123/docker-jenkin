@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.CollectorCompareMapper">
+    <select id="collectorCompare" parameterType="java.util.Map" statementType="CALLABLE">
+        { call MAFCDB.MAFC_SAP_RECON_COLL(
+        #{curDt,mode=IN, jdbcType=DATE},
+        #{out,jdbcType=VARCHAR,mode=OUT})
+        }
+    </select>
+
+    <select id="getCollectorCompare" resultType="CollectorCompareModel" parameterType="CollectorCompareModel">
+        SELECT
+        a.agreementid agreementId,
+        a.AGREEMENTNO agreementNo,
+        CASE WHEN a.CHANNEL = 'F1'
+        THEN to_char(a.TXN_DATE, 'MM/DD/YYYY') ELSE to_char(a.TXN_DATE, 'MM/DD/YYYY HH24:MI:SS') END txnDt ,
+<!--        to_char(a.TXN_DATE, 'MM/DD/YYYY HH24:MI:SS') txnDt	,-->
+        a.TXN_AMT	txnAmt,
+        a.COLLECTOR collector,
+        a.CHANNEL channel,
+        a.RESULT_MSG	resultMsg,
+        to_char(a.PROCESS_DATE, 'MM/DD/YYYY HH24:MI:SS') processDt
+        FROM
+        MAFCDB.mafc_sap_coll_recon a
+        Where 1=1
+        <if test="resultMsg != null and resultMsg != '' and resultMsg != 'All' and resultMsg != 'DIFFERENT AMOUNT'">
+            AND  a.RESULT_MSG =  #{resultMsg}
+        </if>
+        <choose>
+            <when test="resultMsg == 'DIFFERENT AMOUNT'">
+                AND  a.RESULT_MSG NOT IN ( 'MATCH',
+                'IN F1 - NOT IN STATEMENT',
+                'NOT IN F1 - IN STATEMENT',
+                'F1 DUPLICATE',
+                'STATEMENT DUPLICATE')
+            </when>
+        </choose>
+        <if test="agreementNo != null and agreementNo != ''">
+            AND a.AGREEMENTNO = #{agreementNo}
+        </if>
+        <if test="collector != null and collector != '' and collector != 'All'">
+            AND  a.COLLECTOR =  #{collector}
+        </if>
+        <if test="agreementId != null and agreementId != ''">
+            AND   a.agreementid  =  #{agreementId}
+        </if>
+        <if test="channel != null and channel != '' and channel != 'All'">
+            AND  a.CHANNEL =  #{channel}
+        </if>
+        <if test="processDt != null and processDt != ''">
+            AND TRUNC(a.PROCESS_DATE) <![CDATA[=]]> TO_DATE(#{processDt}, 'MM-DD-YYYY')
+        </if>
+        <if test="txnDt != null and txnDt != ''">
+            AND TRUNC(a.TXN_DATE) <![CDATA[=]]> TO_DATE(#{txnDt}, 'MM-DD-YYYY')
+        </if>
+        ORDER BY  a.TXN_DATE ASC
+    </select>
+</mapper>

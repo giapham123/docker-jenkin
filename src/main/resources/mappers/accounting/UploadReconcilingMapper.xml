@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.UploadReconcilingMapper">
+   <insert id="insertDataToSapTxn" parameterType="uploadReconcilingModel">
+       INSERT INTO SQLSERVER1.MAFC_SAP_TXN_IMPORT_TMP
+       (BATCHID, TXNID, TRANS_TYPE_CODE, CHANCEL_CODE, AGREEMENT_ID, AMOUNT, TRANS_DATE, IMPORT_DATE, IMPORT_BY, ERROR_IMPORT)
+       VALUES(#{batchId},sqlserver1.MAFC_SAP_TXN_IMPORT_SEQ.NEXTVAL, #{transType}, #{channelCd}, #{agreementId}, #{amount}, #{transDate}, sysdate, #{userLogin}, NULL)
+   </insert>
+    <select id="getMaxIdInSap" resultType="int" >
+        SELECT NVL(MAX(BATCHID), 0) FROM SQLSERVER1.MAFC_SAP_TXN_IMPORT
+    </select>
+    <select id="getMaxIdInTMP" resultType="int" >
+        SELECT NVL(MAX(BATCHID), 0) FROM SQLSERVER1.MAFC_SAP_TXN_IMPORT_TMP
+    </select>
+    <select id="getChannel" resultType="UploadReconcilingModel">
+        SELECT CHANNEL_CODE channelCd, CHANNEL_DESC channelDesc FROM  SQLSERVER1.MAFC_SAP_CHANNEL ORDER BY CHANNEL_DESC ASC
+    </select>
+    <select id="getTransType" resultType="UploadReconcilingModel">
+        SELECT TRANS_TYPE_CODE transType, TRANS_TYPE_DESC transDesc FROM  SQLSERVER1.MAFC_SAP_TXN_TYPE ORDER BY TRANS_TYPE_DESC ASC
+    </select>
+
+    <select id="getDataUploadReconciling" resultType="UploadReconcilingModel" parameterType="UploadReconcilingModel">
+        SELECT
+        A.BATCHID batchId,
+        A.TXNID txnId,
+        A.TRANS_TYPE_CODE transType,
+        c.trans_type_desc transDesc,
+        A.CHANCEL_CODE channelCd,
+        d.channel_desc channelDesc,
+        A.AGREEMENT_ID agreementId,
+        A.AMOUNT amount,
+        to_char(A.TRANS_DATE, 'MM/DD/YYYY') transDt,
+        to_char(A.IMPORT_DATE, 'MM/DD/YYYY HH24:MI:SS') uploadDt,
+        A.IMPORT_BY uploadBy,
+        to_char(A.GENSAP_DATE, 'MM/DD/YYYY')  genSapDt,
+        A.GENSAP_BY genSapBy,
+        B.SAPYN_1 genSapYN,
+        B.lea_voucherid leaVoucherId,
+        B.caseId caseId
+        FROM
+        sqlserver1.mafc_sap_txn_import a
+        LEFT JOIN (select distinct lea_voucherid,sapyn_1, caseId from sqlserver1.mafc_id_sapgl) b ON a.lea_voucherid = b.lea_voucherid
+        LEFT JOIN sqlserver1.mafc_sap_txn_type c ON a.trans_type_code = c.trans_type_code
+        LEFT JOIN sqlserver1.mafc_sap_channel d ON a.chancel_code = d.channel_code
+        WHERE 1=1
+        <if test="batchId != null and batchId != ''">
+            AND A.BATCHID = #{batchId}
+        </if>
+        <if test="agreementId != null and agreementId != ''">
+            AND  A.AGREEMENT_ID = #{agreementId}
+        </if>
+        <if test="transType != null and transType != ''">
+            AND A.TRANS_TYPE_CODE = #{transType}
+        </if>
+        <if test="channelCd != null and channelCd != ''">
+            AND A.CHANCEL_CODE = #{channelCd}
+        </if>
+        <if test="transDt != null and transDt != ''">
+            AND TRUNC(A.TRANS_DATE) <![CDATA[=]]> TO_DATE(#{transDt}, 'MM-DD-YYYY')
+        </if>
+        <if test="uploadDt != null and uploadDt != ''">
+            AND TRUNC(A.IMPORT_DATE) <![CDATA[=]]> TO_DATE(#{uploadDt}, 'MM-DD-YYYY')
+        </if>
+        ORDER BY A.BATCHID DESC, A.AGREEMENT_ID DESC
+    </select>
+    <select id="getDataUploadReconcilingTmp" resultType="UploadReconcilingModel" parameterType="UploadReconcilingModel">
+        SELECT
+        A.BATCHID batchId,
+        A.TXNID txnId,
+        A.TRANS_TYPE_CODE transType,
+        b.trans_type_desc  transDesc,
+        A.CHANCEL_CODE channelCd,
+        c.channel_desc  channelDesc,
+        A.AGREEMENT_ID agreementId,
+        A.AMOUNT amount,
+        to_char(A.TRANS_DATE, 'MM/DD/YYYY') transDt,
+        to_char(A.IMPORT_DATE, 'MM/DD/YYYY HH24:MI:SS') uploadDt,
+        A.IMPORT_BY uploadBy,
+        ERROR_IMPORT errorDesc
+        FROM
+        sqlserver1.mafc_sap_txn_import_tmp a
+        LEFT JOIN sqlserver1.mafc_sap_txn_type b ON a.trans_type_code = b.trans_type_code
+        LEFT JOIN sqlserver1.mafc_sap_channel c ON a.chancel_code = c.channel_code
+        WHERE 1=1
+        <if test="batchId != null and batchId != ''">
+            AND A.BATCHID = #{batchId}
+        </if>
+        <if test="agreementId != null and agreementId != ''">
+            AND  A.AGREEMENT_ID = #{agreementId}
+        </if>
+        <if test="transType != null and transType != ''">
+            AND A.TRANS_TYPE_CODE = #{transType}
+        </if>
+        <if test="channelCd != null and channelCd != ''">
+            AND A.CHANCEL_CODE = #{channelCd}
+        </if>
+        <if test="transDt != null and transDt != ''">
+            AND TRUNC(A.TRANS_DATE) <![CDATA[=]]> TO_DATE(#{transDt}, 'MM-DD-YYYY')
+        </if>
+        <if test="uploadDt != null and uploadDt != ''">
+            AND TRUNC(A.IMPORT_DATE) <![CDATA[=]]> TO_DATE(#{uploadDt}, 'MM-DD-YYYY')
+        </if>
+        ORDER BY A.BATCHID DESC, A.AGREEMENT_ID DESC
+    </select>
+    <select id="importDataToTxnImport" parameterType="java.util.Map" statementType="CALLABLE">
+        { call SQLSERVER1.MAFC_SAP_TNX_IMPORT(
+        #{batchId, jdbcType=INTEGER ,mode=IN},
+        #{out,jdbcType=VARCHAR,mode=OUT})
+        }
+    </select>
+    <delete id="deleteInSapGL">
+        DELETE FROM SQLSERVER1.mafc_id_sapgl  WHERE CASEID = #{caseId} AND LEA_VOUCHERID = #{leaVoucherId}
+    </delete>
+    <delete id="deleteInSapImport">
+        DELETE FROM SQLSERVER1.mafc_sap_txn_import WHERE LEA_VOUCHERID = #{leaVoucherId} AND AGREEMENT_ID = #{agreementId}
+    </delete>
+</mapper>

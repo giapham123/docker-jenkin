@@ -1,6 +1,6 @@
 package com.dou.adm.configuration;
 
-import com.dou.adm.shared.CommonStrings;
+import com.dou.home.shared.CommonStrings;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;

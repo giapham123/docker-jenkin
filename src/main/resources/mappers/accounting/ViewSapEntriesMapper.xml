@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.ViewSapEntriesMapper">
+    <select id="getDataViewSapEntries" resultType="ViewSapEntriesModel" parameterType="ViewSapEntriesModel">
+        SELECT
+        GLACCT glAcct,
+        ACCTNAME acctNm,
+        DEBIT debit,
+        CREDIT credit,
+        REMARKS remarks,
+        RO_DEPT roDept,
+        BUDGET_CODE budgetCd,
+        DESC_VIETNAMESE descVn,
+        GROUPGL groupGl,
+        TO_CHAR(TXN_DATE, 'MM/DD/YYYY') txnDt,
+        TO_CHAR(RUN_DATE, 'MM/DD/YYYY  HH24:MI:SS') runDt,
+        ENTRIES_TYPE entriesType, sapyn_2 sapYn, userid usrLg
+        FROM
+        (with t5 as (select*from sqlserver1.mafc_sap_template a
+        where 1=1
+        <if test="sapYn != null and sapYn != 'All'">
+            AND sapyn_2  = #{sapYn}
+        </if>
+        <if test="sapGl != null and sapGl != ''">
+            AND GLACCT like '%' ||  #{sapGl} || '%'
+        </if>
+        <if test="remarks != null and remarks != ''">
+            AND  UPPER(remarks) like UPPER('%' || #{remarks} || '%')
+        </if>
+        <if test="transDt != null and transDt != ''">
+            AND TRUNC(TXN_DATE) <![CDATA[=]]> TO_DATE(#{transDt}, 'MM-DD-YYYY')
+        </if>
+        <if test="updateDt != null and updateDt != ''">
+            AND TRUNC(run_date) <![CDATA[=]]> TO_DATE(#{updateDt}, 'MM-DD-YYYY')
+        </if>
+        AND (a.remarks NOT LIKE 'PD NON LIFE%'
+        AND a.remarks NOT LIKE 'CLEAR COLL%'))
+        ,t6 as (select case when nvl(debit,0)<![CDATA[<>]]>0 then debit else credit end txn_amt,t5.* from t5)
+        ,t7 as (select count(remarks)over(partition by txn_amt,remarks) cnt, t6.* from t6)
+        ,t8 as (select row_number()over(partition by cnt,txn_amt,remarks order by nvl(debit,0) desc) r, t7.* from t7)
+        ,t9 as (select glacct,acctname,debit,credit,remarks,ro_dept,budget_code, desc_vietnamese, groupgl, txn_date,run_date,entries_type,sapyn_2,userid
+        from t8 where cnt>1 order by remarks asc,txn_date,nvl(txn_amt,0) desc,nvl(debit,0)desc)
+        ,t10 as (select glacct,acctname,debit,credit,remarks,ro_dept,budget_code, desc_vietnamese, groupgl, txn_date,run_date,entries_type,sapyn_2,userid
+        from t8 where cnt=1 order by remarks asc,txn_date,debit desc,credit)
+        select*from t10 union all select*from t9)
+        UNION ALL
+        SELECT
+        GLACCT glAcct,
+        ACCTNAME acctNm,
+        DEBIT debit,
+        CREDIT credit,
+        REMARKS remarks,
+        RO_DEPT roDept,
+        BUDGET_CODE budgetCd,
+        DESC_VIETNAMESE descVn,
+        GROUPGL groupGl,
+        TO_CHAR(TXN_DATE, 'MM/DD/YYYY') txnDt,
+        TO_CHAR(RUN_DATE, 'MM/DD/YYYY  HH24:MI:SS') runDt,
+        ENTRIES_TYPE entriesType, sapyn_2 sapYn, userid usrLg
+        FROM
+        (
+        SELECT
+        GLACCT,
+        ACCTNAME,
+        DEBIT,
+        CREDIT,
+        REMARKS,
+        RO_DEPT,
+        BUDGET_CODE,
+        DESC_VIETNAMESE,
+        GROUPGL,
+        TXN_DATE,
+        RUN_DATE,
+        ENTRIES_TYPE, sapyn_2, userid
+        FROM
+        sqlserver1.mafc_sap_template b
+        WHERE 1=1
+        <if test="sapGl != null and sapGl != ''">
+            AND GLACCT like '%' ||  #{sapGl} || '%'
+        </if>
+        <if test="sapYn != null and sapYn != 'All'">
+            AND sapyn_2 = #{sapYn}
+        </if>
+        <if test="remarks != null and remarks != ''">
+            AND  UPPER(remarks) like UPPER('%' || #{remarks} || '%')
+        </if>
+        <if test="transDt != null and transDt != ''">
+            AND TRUNC(TXN_DATE) <![CDATA[=]]> TO_DATE(#{transDt}, 'MM-DD-YYYY')
+        </if>
+        <if test="updateDt != null and updateDt != ''">
+            AND TRUNC(run_date) <![CDATA[=]]> TO_DATE(#{updateDt}, 'MM-DD-YYYY')
+        </if>
+        AND (b.remarks LIKE 'PD NON LIFE%'
+        OR b.remarks LIKE 'CLEAR COLL%')
+        ORDER BY
+        b.txn_date,
+        b.remarks,
+        b.credit,
+        b.debit)
+    </select>
+
+    <select id="pushSap" parameterType="java.util.Map" statementType="CALLABLE">
+        { call SQLSERVER1.mafc_push_sap_proc(
+        #{curDt,mode=IN, jdbcType=DATE},
+        #{usrLg,mode=IN, jdbcType=VARCHAR},
+        #{out,jdbcType=VARCHAR,mode=OUT})
+        }
+    </select>
+</mapper>

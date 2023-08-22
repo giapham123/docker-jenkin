@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.CollectionTransMapper">
+    <select id="getCollTransData" resultType="CollectionTransModel" parameterType="CollectionTransModel">
+        SELECT
+        AGREEMENTID agreementId,
+        CUSTOMER_NAME cusNm,
+        to_char(TXN_DATE, 'MM/DD/YYYY HH24:MI:SS')  transDt,
+        TXN_AMT amount,
+        COLLECTOR_NAME channel
+        FROM
+        mafcdb.mafc_sap_coll
+        Where 1=1
+        <if test="channel != null and channel != '' and channel != 'All'">
+            AND  COLLECTOR_NAME =  #{channel}
+        </if>
+        <if test="agreementId != null and agreementId != ''">
+            AND AGREEMENTID = #{agreementId}
+        </if>
+        <if test="transDt != null and transDt != ''">
+            AND TRUNC(TXN_DATE) <![CDATA[=]]> TO_DATE(#{transDt}, 'MM-DD-YYYY')
+        </if>
+    </select>
+</mapper>

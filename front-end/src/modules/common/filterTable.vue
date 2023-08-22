@@ -39,6 +39,15 @@
                 @click:append-outer="openOperationList(header.value, $event)"
                 @input="filterColunmOnTable(header.value)"
               />
+              <!-- HangNguyen- 20191024- Add type dropdow filter  -->
+              <v-select
+                v-else-if="header.type === 'dropdown'"
+                :items="['ALL', 'N/A', 'No', 'Yes']"
+                v-model="search_val[header.value].value"
+                label=""
+                @input="filterColunmOnTable(header.value)"
+              ></v-select>
+              <!-- End HangNguyen- 20191024- Add type dropdow filter-->
               <checkbox
                 v-else-if="header.type === 'bool'"
                 v-model="search_val[header.value].value"
@@ -333,6 +342,7 @@ export default {
       _.forIn(this.search_val, filter => {
         if (this.setting_header && this.no_hiddens[filter.column] != true)
           return;
+        if (filter.value == 'ALL') filter.value = '';
         if (!FILTER_ULTIS.ignore[filter.type](filter.value)) {
           if (accepts == null) {
             accepts = filter.results;

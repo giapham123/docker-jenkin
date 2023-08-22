@@ -1,57 +1,62 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-//Login
+import _ from 'lodash';
+
 import global from 'modules/global/store';
 import login from 'modules/login/store';
 import register from 'modules/register/store';
 import users from 'modules/users/store';
 import forgotpassword from 'modules/forgotpassword/store';
 import resetstatus from 'modules/reset-status/store';
-//User account management
-import accountmanagement from 'modules/accountmanagement/store';
-import accountmanagement_group from 'modules/accountmanagement_group/store';
-import groupfeature from 'modules/group_feature/store';
-//Department staff information
-import staff_info from 'modules/staff_info/store';
-import drs_staff from 'modules/staff_info/drs_staff/store';
-import so_staff from 'modules/staff_info/so_staff/store';
-import und_staff from 'modules/staff_info/und_staff/store';
-import branch_network_staff from 'modules/staff_info/branch_network_staff/store';
-import callcenter_staff from 'modules/staff_info/callcenter_staff/store';
-import telesale_staff from 'modules/staff_info/telesale_staff/store';
-import thirdparty_staff from 'modules/staff_info/thirdparty_staff/store';
-import drs_detail from 'modules/staff_info/drs_detail/store';
-import requestTicket from 'modules/staff_info/request_tickets/store';
-import verifyTickets from 'modules/staff_info/verify_tickets/store';
-import reportRequest from 'modules/staff_info/report_request/store';
-import accountInfoReview from 'modules/staff_info/account_info_review/store';
+import dashboard from 'modules/dashboard/store';
+import printTool from 'modules/print-tool/store';
+import accounting from 'modules/accounting/store';
+import accountinghis from 'modules/accounting-his/store';
+import writeoff from 'modules/writeoff-ext/store';
+import waveoffamount from 'modules/wave-off-amount/store';
+import uploadFile from 'modules/upload-file/store';
+import rejectUploadFile from 'modules/reject-upload-file/store';
+import rejectUploadGLSAPFile from 'modules/reject-upload-file-gl-sap/store';
+import outNetReport from 'modules/out-net-report/store';
+import checkTerDailyReport from 'modules/check-termination-daily-report/store';
+// import closeSoldout from 'modules/close-soldout/store';
 
 Vue.use(Vuex);
 
+const STORE_MODULE_POSTFIX = '/store/index.js';
+const requireModule = require.context('modules', true, /\.js$/);
+const modules = {
+  global,
+  login,
+  register,
+  users,
+  forgotpassword,
+  resetstatus,
+  dashboard,
+  printTool,
+  accounting,
+  writeoff,
+  accountinghis,
+  waveoffamount,
+  uploadFile,
+  rejectUploadFile,
+  rejectUploadGLSAPFile,
+  outNetReport,
+  checkTerDailyReport
+};
+requireModule.keys().forEach(filename => {
+  if (!_.endsWith(filename, STORE_MODULE_POSTFIX)) return;
+
+  let folderPath = _.replace(filename, STORE_MODULE_POSTFIX, '');
+  if (folderPath == '') return;
+
+  let moduleName = _.camelCase(
+    _.replace(_.last(_.split(folderPath, '/')), '/', '')
+  );
+  modules[moduleName] =
+    requireModule(filename).default || requireModule(filename);
+});
 export default new Vuex.Store({
-  modules: {
-    global,
-    login,
-    register,
-    users,
-    forgotpassword,
-    resetstatus,
-    accountmanagement,
-    accountmanagement_group,
-    groupfeature,
-    staff_info,
-    drs_staff,
-    so_staff,
-    und_staff,
-    branch_network_staff,
-    callcenter_staff,
-    telesale_staff,
-    thirdparty_staff,
-    drs_detail,
-    requestTicket,
-    verifyTickets,
-    reportRequest,
-    accountInfoReview
-  },
+  modules,
   strict: process.env.NODE_ENV !== 'production'
 });

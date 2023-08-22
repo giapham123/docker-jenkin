@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.UploadBankStatementMapper">
+    <delete id="deleteDataInBankStatement">
+        DELETE FROM SQLSERVER1.MAFC_ACC_BANK_STATEMENT WHERE TRUNC(STATEMENT_DATE) =TRUNC(#{statementDate})
+    </delete>
+    <insert id="insertDataUploadBankStatement" parameterType="uploadBankStatementModel" >
+        INSERT INTO
+        SQLSERVER1.MAFC_ACC_BANK_STATEMENT  (
+        TXN_NO,	APPID,	STATEMENT_DATE	,DETAIL,	DESC_ACC,	DEBIT_AMT,	CREATEBY,	CREATEDATE
+        )
+        VALUES
+            (#{txnNo},
+            #{appId},
+            #{statementDate},
+            #{detail},
+            #{descAcc},
+            #{debitAmt},
+            #{userLogin},
+            sysdate)
+    </insert>
+    <select id="isExistTxnNo" resultType="int">
+        select count(*) from SQLSERVER1.MAFC_ACC_BANK_STATEMENT  where TXN_NO = #{txnNo} AND TRUNC(STATEMENT_DATE) <![CDATA[<>]]>TRUNC(#{statementDate})
+    </select>
+
+    <select id="isExistAgreementId" resultType="int">
+        select count(*) from  java_leama.LEA_AGREEMENT_DTL  where AGREEMENTID = #{appId}
+    </select>
+    <select id="getDataBankStatement"  resultType="UploadBankStatementModel" parameterType="UploadBankStatementModel">
+        SELECT
+        appId,
+        statementDate,
+        detail,
+        txnNo,
+        descAcc,
+        debitAmt
+        FROM (
+        SELECT
+        APPID appId,
+        Statement_DATE statementDate,
+        DETAIL detail,
+        TXN_NO txnNo,
+        DESC_ACC descAcc,
+        DEBIT_AMT debitAmt,
+        ROW_NUMBER()
+        OVER(
+        ORDER BY
+        Statement_DATE DESC
+        )                                   line_number
+        FROM
+        SQLSERVER1.MAFC_ACC_BANK_STATEMENT
+        WHERE 1=1
+        <if test="appId != null and appId != ''">
+            AND APPID = #{appId}
+        </if>
+        <if test="txnNo != null and txnNo != ''">
+            AND TXN_NO = #{txnNo}
+        </if>
+        <if test="fromDt != null and toDt != null">
+            AND TRUNC(Statement_DATE) BETWEEN to_date(#{fromDt}, 'MM-DD-YYYY') AND to_date(#{toDt}, 'MM-DD-YYYY')
+        </if>
+        ORDER BY
+        Statement_DATE DESC)
+        WHERE
+        line_number BETWEEN 10 * (#{page} - 1) + 1 AND 10 * #{page}
+    </select>
+    <select id="getDataBankStatementForExport"  resultType="UploadBankStatementModel" parameterType="UploadBankStatementModel">
+        SELECT
+        APPID appId,
+        to_char(Statement_DATE, 'MM/DD/YYYY') statementDateExcel,
+        DETAIL detail,
+        TXN_NO txnNo,
+        DESC_ACC descAcc,
+        DEBIT_AMT debitAmt
+        FROM
+        SQLSERVER1.MAFC_ACC_BANK_STATEMENT
+        WHERE 1=1
+        <if test="appId != null and appId != ''">
+            AND APPID = #{appId}
+        </if>
+        <if test="txnNo != null and txnNo != ''">
+            AND TXN_NO = #{txnNo}
+        </if>
+        <if test="fromDt != null and toDt != null">
+            AND TRUNC(Statement_DATE) BETWEEN to_date(#{fromDt}, 'MM-DD-YYYY') AND to_date(#{toDt}, 'MM-DD-YYYY')
+        </if>
+        ORDER BY
+        Statement_DATE DESC
+    </select>
+    <select id="countAllData"  resultType="int"  parameterType="UploadBankStatementModel">
+        SELECT
+        COUNT(*)
+        FROM
+        SQLSERVER1.MAFC_ACC_BANK_STATEMENT
+        WHERE 1=1
+        <if test="appId != null and appId != ''">
+            AND APPID = #{appId}
+        </if>
+        <if test="txnNo != null and txnNo != ''">
+            AND TXN_NO = #{txnNo}
+        </if>
+        <if test="fromDt != null and toDt != null">
+            AND TRUNC(Statement_DATE) BETWEEN to_date(#{fromDt}, 'MM-DD-YYYY') AND to_date(#{toDt}, 'MM-DD-YYYY')
+        </if>
+        ORDER BY
+        Statement_DATE DESC
+    </select>
+</mapper>

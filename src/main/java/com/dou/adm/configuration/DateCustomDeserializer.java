@@ -1,6 +1,6 @@
 package com.dou.adm.configuration;
 
-import com.dou.adm.shared.CommonStrings;
+import com.dou.home.shared.CommonStrings;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;

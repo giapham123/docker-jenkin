@@ -28,7 +28,7 @@ public class EmailServiceImpl implements EmailService {
 //
 //        // set loading location to src/main/resources/templates
 //        Template template = freemarkerConfig.getTemplate(emailFile);
-//        String text = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+//        String text = FreeMarkerTemplateUtils.processTemplateIntoString(template, models);
 //        helper.setFrom(emailSender);
 //        helper.setTo(recipient);
 //        helper.setText(text, true); // set to html

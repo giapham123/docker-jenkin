@@ -1,52 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dou.adm.mappers.UserMapper">
+
     <resultMap id="UserMap" type="User">
         <id column="ID" property="id"/>
         <result column="ACCOUNTID" property="accountId"/>
         <result column="PASSWORD" property="password"/>
-        <result column="ISBLOCKED" property="isBlocked"/>
-        <result column="ISDELETED" property="isDeleted"/>
-        <result column="ISSTATUS" property="isStatus"/>
-        <result column="ISADMIN" property="isAdmin"/>
-        <result column="GROUPUSER_ID" property="groupId"/>
         <result column="DEPARTMENT_ID" property="departmentId"/>
+        <result column="TARGETTABLE" property="targetProfileTable"/>
     </resultMap>
 
-    <select id="loginUser" resultMap="UserMap">
-        SELECT
-            ID,
-            ACCOUNTID,
-            PASSWORD,
-            ISBLOCKED,
-            ISDELETED,
-            ISSTATUS,
-            ISADMIN,
-            GROUPUSER_ID,
-            DEPARTMENT_ID
-        FROM  MAACC.ACCOUNTINFO
-        WHERE  UPPER(ACCOUNTID) = UPPER(#{accountId})
-
-    </select>
-
     <resultMap id="PermissionsMap" type="Permission">
-        <result column="NAME" property="featureName"/>
+        <result column="CODEID" property="featureName"/>
         <result column="URL" property="featureUrl"/>
         <result column="BUTTONCODEID" property="btnId"/>
         <result column="HIDDENFIELDID" property="hiddenFieldId"/>
     </resultMap>
 
+    <resultMap id="UserProfile" type="UserProfiles">
+        <result column="ID" property="id"/>
+        <result column="ACCOUNTID" property="accountId"/>
+        <result column="MAFCCODE" property="mafcCode"/>
+        <result column="DRSCODE" property="drsCode"/>
+        <result column="FULLNAME" property="fullname"/>
+        <result column="EMAIL" property="email"/>
+        <result column="PHONE" property="phone"/>
+        <result column="MOBILE" property="mobile"/>
+        <result column="POSITIONCOMPANYID" property="positionCompanyId"/>
+        <result column="BRANCHID" property="branchId"/>
+        <result column="AREA" property="area"/>
+        <result column="DEPARTMENTID" property="departmentId"/>
+        <result column="GROUP" property="group"/>
+        <result column="TEAM" property="team"/>
+        <result column="JOININGDATE" property="joiningDate"/>
+        <result column="ENDDATE" property="endDate"/>
+        <result column="CREATEDDATE" property="createdDate"/>
+        <result column="MODIFIEDDATE" property="modifiedDate"/>
+        <result column="DELETEDDATE" property="deletedDate"/>
+        <result column="CREATEDBY" property="createdBy"/>
+        <result column="MODIFIEDBY" property="modifiedBy"/>
+        <result column="DELETEDBY" property="deletedBy"/>
+        <result column="LEVEL" property="level"/>
+        <result column="PERSONALID" property="personalId"/>
+        <result column="STAFFTYPE" property="staffType"/>
+        <result column="USERTYPE" property="staffType"/>
+        <result column="SUPERVISORID" property="superVisorId"/>
+        <result column="STATUS" property="status"/>
+        <result column="ISADMIN" property="isAdmin"/>
+        <result column="ISDELETED" property="isDeleted"/>
+    </resultMap>
+
+    <select id="loginUser" resultMap="UserMap">
+        SELECT
+            A.ID,
+            A.ACCOUNTID,
+            A.PASSWORD,
+            A.ISBLOCKED,
+            A.ISDELETED,
+            A.ISSTATUS,
+            A.ISADMIN,
+            A.GROUPUSER_ID,
+            A.DEPARTMENT_ID,
+            (SELECT D."TABLE" FROM MAACC.DEPARTMENT D WHERE D.DEPARTMENT_ID = A.DEPARTMENT_ID) TARGETTABLE
+        FROM    MAACC.ACCOUNTINFO A
+        WHERE   UPPER(A.ACCOUNTID) = UPPER(#{accountId})
+
+    </select>
+
     <select id="getInfoPerMissionByAccount" resultMap="PermissionsMap">
-        select fea.NAME,
-               fea.URL
-        from (select distinct A.accountId, B.FEATUREID from Maacc.ACCOUNTPERMISSIONGROUPFEATURE A, Maacc.GROUPFEATURE B
-              where A.GROUPID = B.GROUPID) accPer,
-              Maacc.FEATURE fea,
-              Maacc.ACCOUNTINFO acc
-        where 1=1
-        and accPer.FEATUREID = fea.CODEID
-        and acc.ACCOUNTID = accPer.ACCOUNTID
-        and acc.ACCOUNTID = #{accountId}
+        SELECT F.CODEID CODEID, F.URL
+        FROM MAACC.FEATURE f,
+                MAACC.GROUPFEATURE GF
+        WHERE 	GF.FEATUREID = F.CODEID
+            AND GF.GROUPID IN (
+                    SELECT AG.GROUPID
+                    FROM MAACC.ACCOUNTPERMISSIONGROUPFEATURE AG, MAACC."GROUP" G
+                    WHERE	AG.GROUPID = G.CODEID
+                        AND G.APPLICATION = 'ACC'
+                        AND UPPER(AG.ACCOUNTID) = #{accountId}
+                )
+    </select>
+
+    <select id="retrieveUserProfile" resultMap="UserProfile">
+        SELECT *
+        FROM MAACC.${table}
+        WHERE ACCOUNTID = #{accountId}
     </select>
 
     <!--- update password -->

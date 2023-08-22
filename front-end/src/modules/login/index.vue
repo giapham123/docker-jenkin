@@ -1,57 +1,67 @@
 <template>
-  <v-app id="login" class="dark">
-    <v-content class="home-app-wrapper">
-      <v-container fluid fill-height>
-        <v-layout align-center justify-center>
-          <v-flex xs12 sm8 md4 lg4>
-            <v-card class="elevation-12">
-              <v-toolbar dark color="#00695c">
-                <v-toolbar-title>
-                  ACCOUNT MANAGEMENT
-                </v-toolbar-title>
-              </v-toolbar>
-              <v-card-text>
-                <v-form ref="form" lazy-validation>
-                  <v-text-field
-                    ref="username"
-                    v-model="user.username"
-                    :rules="usernameRules"
-                    prepend-icon="account_box"
-                    label="User Name"
-                    required
-                    autofocus
-                    v-on:keyup.13="subLogin"
-                  />
-                  <v-text-field
-                    ref="password"
-                    v-model="user.password"
-                    :rules="passwordRules"
-                    type="password"
-                    label="Password"
-                    prepend-icon="lock"
-                    required
-                    @keypress.enter="subLogin"
-                  />
-                  <v-alert
-                    :value="!hasLoadedOnce"
-                    color="error"
-                    icon="warning"
-                    outline
-                  >
-                    {{ message }}
-                  </v-alert>
-                  <v-btn
-                    :loading="loading"
-                    :disabled="loading"
-                    color="rgb(0, 150, 136)"
-                    class="white--text"
-                    large
-                    block
-                    @click="subLogin"
-                  >
-                    Login
-                  </v-btn>
-                  <!--<v-layout wrap>
+  <v-content class="home-app-wrapper">
+    <v-container fluid fill-height>
+      <v-layout align-center justify-center>
+        <v-flex xs12 sm8 md4 lg4>
+          <v-card class="elevation-12">
+            <v-toolbar dark color="#00695c">
+              <v-toolbar-title class="display-1">
+                ACCOUNTING MODULE
+              </v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
+              <v-form ref="form" lazy-validation>
+                <v-text-field
+                  ref="username"
+                  v-model="user.username"
+                  :rules="usernameRules"
+                  prepend-icon="account_box"
+                  label="User Name"
+                  required
+                  autofocus
+                  v-on:keyup.13="subLoginByLDap"
+                />
+                <v-text-field
+                  ref="password"
+                  v-model="user.password"
+                  :rules="passwordRules"
+                  type="password"
+                  label="Password"
+                  prepend-icon="lock"
+                  required
+                  @keypress.enter="subLoginByLDap"
+                />
+                <v-alert
+                  :value="!hasLoadedOnce"
+                  color="error"
+                  icon="warning"
+                  outline
+                >
+                  {{ message }}
+                </v-alert>
+                <v-btn
+                  :loading="loading"
+                  :disabled="loading"
+                  color="rgb(0, 150, 136)"
+                  class="white--text"
+                  large
+                  block
+                  @click="subLogin"
+                >
+                  Login
+                </v-btn>
+                <!-- <v-btn
+                  :loading="loading"
+                  :disabled="loading"
+                  color="rgb(0, 150, 136)"
+                  class="white--text"
+                  large
+                  block
+                  @click="subLoginByLDap"
+                >
+                  Login
+                </v-btn> -->
+                <!--<v-layout wrap>
                     <v-flex>
                       <v-btn flat color="#00695c" @click="subRegister">
                         Register
@@ -63,20 +73,20 @@
                       </v-btn>
                     </v-flex>
                   </v-layout>-->
-                </v-form>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-content>
-  </v-app>
+              </v-form>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-content>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import SHA256 from 'sha256';
 import Service from 'core/service';
+import JSEncrypt from 'jsencrypt'
 // import { ACCESS_TOKEN_KEY, EXPIRES_AT } from 'core/constants';
 // import Service from 'core/service';
 
@@ -117,7 +127,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('login', ['login', 'validateToken', 'logout']),
+    ...mapActions('login', ['login', 'validateToken', 'logout','getKey']),
 
     async subLogin() {
       this.loading = true;
@@ -128,7 +138,28 @@ export default {
       } else {
         await this.login({
           username: this.user.username,
-          password: SHA256(this.user.password)
+          password: SHA256(this.user.password),
+          isLdap: 0
+        });
+      }
+      this.loading = false;
+    },
+    async subLoginByLDap() {
+      this.loading = true;
+      var reKey = await this.getKey();
+      let publicKey = reKey.data
+      let RSAEncrypt = new JSEncrypt();
+      RSAEncrypt.setPublicKey(publicKey);
+      let encryptedPass = RSAEncrypt.encrypt(this.user.password);
+      if (!this.user.username) {
+        this.$refs.username.focus();
+      } else if (!this.user.password) {
+        this.$refs.password.focus();
+      } else {
+        await this.login({
+          username: this.user.username,
+          password: encryptedPass,
+          isLdap: 1
         });
       }
       this.loading = false;

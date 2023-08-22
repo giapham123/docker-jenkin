@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.ViewFinnoneEntriesMapper">
+    <select id="getDataViewFinnoneEntries" resultType="ViewFinnoneEntriesModel" parameterType="ViewFinnoneEntriesModel">
+        SELECT
+        agreementid,
+        debitamt,
+        creditamt,
+        transdt,
+        sapgl,
+        remarks,
+        leavoucherid,
+        note,
+        updatedt,
+        sapYn
+        FROM
+        (SELECT
+        a.caseid agreementid,
+        a.dramt debitamt,
+        a.cramt creditamt,
+        TO_CHAR(a.TXN_DATE, 'MM/DD/YYYY') transdt,
+        a.sapgl sapgl,
+        a.remarks remarks,
+        a.lea_voucherid leavoucherid,
+        a.NOTE note,
+        TO_CHAR(a.run_date, 'MM/DD/YYYY HH24:MI:SS') updatedt,
+        a.sapyn_1 sapYn,
+        ROW_NUMBER()
+        OVER(
+        ORDER BY
+        a.lea_voucherid,
+        a.cramt
+        ) line_number
+        FROM
+        sqlserver1.mafc_id_sapgl a
+        WHERE 1=1
+        <choose>
+            <when test="sapYn.toString() == 'Y'.toString()">
+                AND a.sapyn_1 = 'Y'
+            </when>
+            <when test="sapYn.toString() == 'N'.toString()">
+                AND a.sapyn_1 is null
+            </when>
+        </choose>
+        <if test="isUseDebit != null and isUseDebit != ''">
+            AND  a.dramt >0
+        </if>
+        <if test="isUseCredit != null and isUseCredit != ''">
+            AND a.cramt >0
+        </if>
+        <if test="agreementId != null and agreementId != ''">
+            AND  a.caseid = #{agreementId}
+        </if>
+        <if test="sapGl != null and sapGl != ''">
+            AND a.sapgl like '%' ||  #{sapGl} || '%'
+        </if>
+        <if test="remarks != null and remarks != ''">
+            AND  UPPER(a.remarks) like UPPER('%' || #{remarks} || '%')
+        </if>
+        <if test="transDt != null and transDt != ''">
+            AND TRUNC(a.TXN_DATE) <![CDATA[=]]> TO_DATE(#{transDt}, 'MM-DD-YYYY')
+        </if>
+        <if test="updateDt != null and updateDt != ''">
+            AND TRUNC(a.run_date) <![CDATA[=]]> TO_DATE(#{updateDt}, 'MM-DD-YYYY')
+        </if>
+        ORDER BY
+        a.lea_voucherid,
+        a.cramt)
+        WHERE
+        line_number BETWEEN 10 * (#{page} - 1) + 1 AND 10 * #{page}
+    </select>
+    <select id="countAllDataViewFinnoneEntries"  resultType="int"  parameterType="ViewFinnoneEntriesModel">
+        SELECT COUNT(*) FROM
+        sqlserver1.mafc_id_sapgl a
+        WHERE 1=1
+        <choose>
+            <when test="sapYn.toString() == 'Y'.toString()">
+                AND a.sapyn_1 = 'Y'
+            </when>
+            <when test="sapYn.toString() == 'N'.toString()">
+                AND a.sapyn_1 is null
+            </when>
+        </choose>
+        <if test="isUseDebit != null and isUseDebit != ''">
+            AND  a.dramt >0
+        </if>
+        <if test="isUseCredit != null and isUseCredit != ''">
+            AND a.cramt >0
+        </if>
+        <if test="agreementId != null and agreementId != ''">
+            AND  a.caseid = #{agreementId}
+        </if>
+        <if test="sapGl != null and sapGl != ''">
+            AND a.sapgl like '%' ||  #{sapGl} || '%'
+        </if>
+        <if test="remarks != null and remarks != ''">
+            AND  UPPER(a.remarks) like UPPER('%' || #{remarks} || '%')
+        </if>
+        <if test="transDt != null and transDt != ''">
+            AND TRUNC(a.TXN_DATE) <![CDATA[=]]> TO_DATE(#{transDt}, 'MM-DD-YYYY')
+        </if>
+        <if test="updateDt != null and updateDt != ''">
+            AND TRUNC(a.run_date) <![CDATA[=]]> TO_DATE(#{updateDt}, 'MM-DD-YYYY')
+        </if>
+        ORDER BY
+        a.lea_voucherid,
+        a.cramt
+    </select>
+    <select id="dataForExport" resultType="ViewFinnoneEntriesModel" parameterType="ViewFinnoneEntriesModel">
+        SELECT
+        a.caseid agreementid,
+        a.dramt debitamt,
+        a.cramt creditamt,
+        TO_CHAR(a.TXN_DATE, 'MM/DD/YYYY') transdt,
+        a.sapgl sapgl,
+        a.remarks remarks,
+        a.lea_voucherid leavoucherid,
+        a.NOTE note,
+        TO_CHAR(a.run_date, 'MM/DD/YYYY HH24:MI:SS') updatedt,
+        a.sapyn_1 sapYn
+        FROM
+        sqlserver1.mafc_id_sapgl a
+        WHERE 1=1
+        <choose>
+            <when test="sapYn.toString() == 'Y'.toString()">
+                AND a.sapyn_1 = 'Y'
+            </when>
+            <when test="sapYn.toString() == 'N'.toString()">
+                AND a.sapyn_1 is null
+            </when>
+        </choose>
+        <if test="isUseDebit != null and isUseDebit != ''">
+            AND  a.dramt >0
+        </if>
+        <if test="isUseCredit != null and isUseCredit != ''">
+            AND a.cramt >0
+        </if>
+        <if test="agreementId != null and agreementId != ''">
+            AND  a.caseid = #{agreementId}
+        </if>
+        <if test="sapGl != null and sapGl != ''">
+            AND a.sapgl like '%' ||  #{sapGl} || '%'
+        </if>
+        <if test="remarks != null and remarks != ''">
+            AND  UPPER(a.remarks) like UPPER('%' || #{remarks} || '%')
+        </if>
+        <if test="transDt != null and transDt != ''">
+            AND TRUNC(a.TXN_DATE) <![CDATA[=]]> TO_DATE(#{transDt}, 'MM-DD-YYYY')
+        </if>
+        <if test="updateDt != null and updateDt != ''">
+            AND TRUNC(a.run_date) <![CDATA[=]]> TO_DATE(#{updateDt}, 'MM-DD-YYYY')
+        </if>
+        ORDER BY
+        a.lea_voucherid,
+        a.cramt
+    </select>
+</mapper>

@@ -1,72 +1,70 @@
 <template>
-  <v-app id="register" class="dark">
-    <v-content>
-      <v-container fluid fill-height>
-        <v-layout align-center justify-center>
-          <v-flex xs12 sm8 md4 lg4>
-            <v-card class="elevation-12">
-              <v-toolbar dark color="primary">
-                <v-toolbar-title>Reset Password</v-toolbar-title>
-              </v-toolbar>
-              <v-card-text>
-                <v-form ref="form" lazy-validation>
-                  <p class="text-sm-left">{{ message }}</p>
-                  <v-text-field
-                    ref="oldpassword"
-                    v-model="user.oldpassword"
-                    type="password"
-                    label="Old Password"
-                    prepend-icon="lock"
-                    required
-                    v-on:keyup.13="changePassword"
-                  />
-                  <v-text-field
-                    ref="newpassword"
-                    v-model="user.newpassword"
-                    type="password"
-                    label="New Password"
-                    prepend-icon="lock"
-                    required
-                    v-on:keyup.13="changePassword"
-                  />
-                  <v-text-field
-                    ref="confirmpassword"
-                    v-model="user.confirmpassword"
-                    type="password"
-                    label="Confirm Password"
-                    prepend-icon="lock"
-                    required
-                    v-on:keyup.13="changePassword"
-                  />
-                  <v-btn color="success" primary large @click="goToLogin">
-                    Login
-                  </v-btn>
-                  <v-btn
-                    v-if="success"
-                    color="success"
-                    primary
-                    large
-                    @click="changePassword"
-                  >
-                    Change Password
-                  </v-btn>
-                  <v-btn
-                    v-if="!success"
-                    color="error"
-                    primary
-                    large
-                    @click="goToResetPass"
-                  >
-                    Reset Password
-                  </v-btn>
-                </v-form>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-content>
-  </v-app>
+  <v-content>
+    <v-container fluid fill-height>
+      <v-layout align-center justify-center>
+        <v-flex xs12 sm8 md4 lg4>
+          <v-card class="elevation-12">
+            <v-toolbar dark color="primary">
+              <v-toolbar-title>Reset Password</v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
+              <v-form ref="form" lazy-validation>
+                <p class="text-sm-left">{{ message }}</p>
+                <v-text-field
+                  ref="oldpassword"
+                  v-model="user.oldpassword"
+                  type="password"
+                  label="Old Password"
+                  prepend-icon="lock"
+                  required
+                  v-on:keyup.13="changePassword"
+                />
+                <v-text-field
+                  ref="newpassword"
+                  v-model="user.newpassword"
+                  type="password"
+                  label="New Password"
+                  prepend-icon="lock"
+                  required
+                  v-on:keyup.13="changePassword"
+                />
+                <v-text-field
+                  ref="confirmpassword"
+                  v-model="user.confirmpassword"
+                  type="password"
+                  label="Confirm Password"
+                  prepend-icon="lock"
+                  required
+                  v-on:keyup.13="changePassword"
+                />
+                <v-btn color="success" primary large @click="goToLogin">
+                  Login
+                </v-btn>
+                <v-btn
+                  v-if="success"
+                  color="success"
+                  primary
+                  large
+                  @click="changePassword"
+                >
+                  Change Password
+                </v-btn>
+                <v-btn
+                  v-if="!success"
+                  color="error"
+                  primary
+                  large
+                  @click="goToResetPass"
+                >
+                  Reset Password
+                </v-btn>
+              </v-form>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-content>
 </template>
 
 <script>

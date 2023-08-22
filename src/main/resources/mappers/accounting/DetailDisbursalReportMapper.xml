@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.DetailDisbursalReportMapper">
+<!--    <select id="getDataDetailDisbursalReport"-->
+<!--            resultType="DetailDisbursalReportModel"-->
+<!--            parameterType="DetailDisbursalReportModel">-->
+<!--        SELECT-->
+<!--            a.LOG_DATE disDt,-->
+<!--            a.AGREEMENTID appId,-->
+<!--            a.AGREEMENTNO agreeNo,-->
+<!--            a.CUSTOMERNAME customerNm,-->
+<!--            a.BANKCODE bankCd,-->
+<!--            a.BANKNAME bankNm,-->
+<!--            a.BANKBRANCH bankBranch,-->
+<!--            a.ACCNO bankAccNum,-->
+<!--            a.DISBURSALAMOUNT disAmt,-->
+<!--            a.PARTNER_BANK partBank,-->
+<!--            a.DEALERNAME benNm,-->
+<!--            a.DISBURSALAMT_INS disAmtIns,-->
+<!--            a.SCHEMEDESC schemeNm,-->
+<!--            b.txn_no txnNo,-->
+<!--            b.STATEMENT_DATE statementDt-->
+<!--        FROM-->
+<!--            SQLSERVER1.MAFC_AT_LPD_SUCCESS_DTL @finnone a,  SQLSERVER1.MAFC_ACC_BANK_STATEMENT  @finnone b,-->
+<!--            Java_Leama.LEA_AGREEMENT_DTL @finnone c-->
+<!--        WHERE b.APPID = a.AGREEMENTID AND c.AGREEMENTID = a.AGREEMENTID-->
+
+<!--        <if test="typeProduct == 'Cash loan'">-->
+<!--            AND c.PRODUCTFLAG in ('SALMOR','MAEALPIL','FALPIL','TOPPIL','SELPIL','SALPIL','OCLPIL')-->
+<!--        </if>-->
+<!--        <if test="typeProduct == 'Stock loan'">-->
+<!--            AND c.PRODUCTFLAG in ('MGL')-->
+<!--        </if>-->
+<!--        <if test="typeProduct == 'Auto loan'">-->
+<!--            AND c.PRODUCTFLAG in ('OTOSFN')-->
+<!--        </if>-->
+<!--        <if test="typeProduct == 'CDL'">-->
+<!--            AND c.PRODUCTFLAG in ('CDLPIL', 'TWLPIL', 'SPLPIL')-->
+<!--        </if>-->
+<!--        <if test="typeProduct == 'CAO PHONG'">-->
+<!--            AND c.PRODUCTFLAG in ('CDLPIL') AND a.dealername LIKE '%TNHH CAO PHONG%'-->
+<!--        </if>-->
+<!--        <if test="typeProduct == 'FPT'">-->
+<!--            AND c.PRODUCTFLAG in ('EXT_FPT')-->
+<!--        </if>-->
+<!--        <if test="typeProduct == 'TGDD'">-->
+<!--            AND c.PRODUCTFLAG in ('EXT_MWG')-->
+<!--        </if>-->
+<!--        <if test="fromDt != null and toDt != null">-->
+<!--            AND TRUNC(a.LOG_DATE) BETWEEN to_date(#{fromDt}, 'MM-DD-YYYY') AND to_date(#{toDt}, 'MM-DD-YYYY')-->
+<!--        </if>-->
+<!--    </select>-->
+
+    <resultMap type="com.dou.accounting.models.DetailDisbursalReportModel" id="mappingCodeMap2">
+        <result property="disDt" column="Date_disb_F1"/>
+        <result property="appId" column="AppID"/>
+        <result property="agreeNo" column="AGREEMENTNO"/>
+        <result property="customerNm" column="CUSTOMER_NAME"/>
+        <result property="bankCd" column="BANKCODE"/>
+        <result property="bankNm" column="BANKNAME"/>
+        <result property="bankBranch" column="BANKBRANCH"/>
+        <result property="bankAccNum" column="Bank_Account_Number"/>
+        <result property="disAmt" column="Disbursal_Amount"/>
+        <result property="partBank" column="PARTNER_BANK"/>
+        <result property="benNm" column="Beneficiary_Name"/>
+        <result property="disAmtIns" column="Disbursal_Amount_Ins"/>
+        <result property="schemeNm" column="SCHEMEDESC"/>
+        <result property="txnNo" column="TXN_NO"/>
+        <result property="statementDt" column="STATEMENT_DATE"/>
+        <result property="typeProduct" column="PRODUCT"/>
+    </resultMap>
+
+    <select id="getDataDetailDisbursalReport" parameterType="java.util.Map" statementType="CALLABLE">
+        { call SQLSERVER1.PRC_MAFC_DISBRPT_VIEW2(
+        #{frDate, jdbcType=VARCHAR,mode=IN},
+        #{toDate, jdbcType=VARCHAR,mode=IN},
+        #{out,jdbcType=VARCHAR,mode=OUT},
+        #{out_cur,jdbcType=CURSOR,  resultMap=mappingCodeMap2,mode=OUT})
+        }
+    </select>
+</mapper>

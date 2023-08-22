@@ -4,17 +4,12 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <settings>
-        <setting name="jdbcTypeForNull" value="NULL" />
+        <setting name="callSettersOnNulls" value="true"/>
     </settings>
     <typeAliases>
         <package name="com.dou.adm.models"/>
-        <package name="com.dou.home.models"/>
-        <package name="com.dou.acctmanagement.models"/>
-        <package name="com.dou.staff_info.models"/>
-
+        <package name="com.dou.accounting.models"/>
+        <package name="com.dou.bankstatement.models"/>
     </typeAliases>
-    <mappers>
-        <!--<mappers resource="sample/mybatis/mappers/CityMapper.xml"/>-->
-        <!--<mappers resource="sample/mybatis/mappers/HotelMapper.xml"/>-->
-    </mappers>
+    <mappers/>
 </configuration>

@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.bankstatement.mappers.FTPMapper">
+    <resultMap id="SapCLCollectorConfig" type="SapCLCollectorConfigModel">
+        <result column="table_name" property="table_name"></result>
+        <result column="column_name" property="column_name"></result>
+        <result column="row_num" property="row_num"></result>
+        <result column="index_num" property="index_num"></result>
+        <result column="update_date" property="update_date"></result>
+        <result column="note" property="note"></result>
+    </resultMap>
+
+
+    <insert id="bankStatement" parameterType="BankStatementModel">
+        INSERT INTO mafcdb.BANK_STATEMENT (BankName, FileName, MAFC_Acct, Balance, Sap_Acct)
+        VALUES
+        (#{bankName,            javaType=String,     jdbcType=VARCHAR},
+        #{fileName,            javaType=String,     jdbcType=VARCHAR},
+        #{acct,            javaType=String,     jdbcType=VARCHAR},
+        #{balance,            javaType=String,     jdbcType=VARCHAR},
+        #{sapAcct,            javaType=String,     jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insSapCLEPay" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_epay
+            (
+                stt,
+                ngay_giao_dich,
+                file_name,
+                ma_giao_dich,
+                so_hop_dong,
+                ho_ten,
+                thong_tin_lien_he,
+                khu_vuc,
+                don_vi_thu,
+                so_tien
+            )
+            VALUES
+            (
+                #{element.stt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ngay_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_hop_dong,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ho_ten,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thong_tin_lien_he,            javaType=String,     jdbcType=VARCHAR},
+                #{element.khu_vuc,            javaType=String,     jdbcType=VARCHAR},
+                #{element.don_vi_thu,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLMomoApp" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_momo_app
+            (
+                stt,
+                ngay_giao_dich,
+                file_name,
+                tid,
+                so_hd,
+                ten_kh,
+                so_tien,
+                sdt,
+                nguon_gd,
+                trang_thai
+            )
+            VALUES
+            (
+                #{element.stt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ngay_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.tid,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_hd,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ten_kh,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien,            javaType=String,     jdbcType=VARCHAR},
+                #{element.sdt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.nguon_gd,            javaType=String,     jdbcType=VARCHAR},
+                #{element.trang_thai,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLMomoMF" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_momo_mf
+            (
+                stt,
+                ma_giao_dich,
+                file_name,
+                ma_don_hang,
+                ten_khach_hang,
+                so_dien_thoai,
+                so_tien,
+                khuyen_mai,
+                prepaid_card_su_dung_noi_bo,
+                cashback,
+                doanh_thu_hop_tac,
+                doanh_thu_the_tt_tra_truoc,
+                ngay_giao_dich,
+                trang_thai,
+                ma_cua_hang,
+                ten_cua_hang,
+                phuong_thuc_thanh_toan,
+                mo_ta,
+                mo_ta_loi
+            )
+            VALUES
+            (
+                #{element.stt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_don_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ten_khach_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_dien_thoai,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien,            javaType=String,     jdbcType=VARCHAR},
+                #{element.khuyen_mai,            javaType=String,     jdbcType=VARCHAR},
+                #{element.prepaid_card_su_dung_noi_bo,            javaType=String,     jdbcType=VARCHAR},
+                #{element.cashback,            javaType=String,     jdbcType=VARCHAR},
+                #{element.doanh_thu_hop_tac,            javaType=String,     jdbcType=VARCHAR},
+                #{element.doanh_thu_the_tt_tra_truoc,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ngay_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.trang_thai,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_cua_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ten_cua_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.phuong_thuc_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.mo_ta,            javaType=String,     jdbcType=VARCHAR},
+                #{element.mo_ta_loi,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLOnepay" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_onepay
+            (
+                no,
+                bank_id,
+                file_name,
+                merchant_id,
+                tran_date,
+                original_date,
+                transaction_id,
+                merchant_trans_ref,
+                order_ref,
+                card_number,
+                amount,
+                original_amount,
+                transaction_type,
+                response_code,
+                transaction_state
+            )
+            VALUES
+            (
+                #{element.no,            javaType=String,     jdbcType=VARCHAR},
+                #{element.bank_id,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.merchant_id,            javaType=String,     jdbcType=VARCHAR},
+                #{element.tran_date,            javaType=String,     jdbcType=VARCHAR},
+                #{element.original_date,            javaType=String,     jdbcType=VARCHAR},
+                #{element.transaction_id,            javaType=String,     jdbcType=VARCHAR},
+                #{element.merchant_trans_ref,            javaType=String,     jdbcType=VARCHAR},
+                #{element.order_ref,            javaType=String,     jdbcType=VARCHAR},
+                #{element.card_number,            javaType=String,     jdbcType=VARCHAR},
+                #{element.amount,            javaType=String,     jdbcType=VARCHAR},
+                #{element.original_amount,            javaType=String,     jdbcType=VARCHAR},
+                #{element.transaction_type,            javaType=String,     jdbcType=VARCHAR},
+                #{element.response_code,            javaType=String,     jdbcType=VARCHAR},
+                #{element.transaction_state,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLPayoo" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_payoo
+            (
+                thoi_diem_thanh_toan,
+                file_name,
+                ma_don_hang,
+                ma_kh,
+                so_tien,
+                ky_thanh_toan,
+                ho_ten,
+                dia_chi
+            )
+            VALUES
+            (
+                #{element.thoi_diem_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_don_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_kh,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ky_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ho_ten,            javaType=String,     jdbcType=VARCHAR},
+                #{element.dia_chi,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLShopeeApp" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_shopeepay_app
+            (
+                stt,
+                thoi_gian_giao_dich,
+                file_name,
+                agreement_id_cmnd,
+                ho_va_ten,
+                so_tien,
+                ma_giao_dich
+            )
+            VALUES
+            (
+                #{element.stt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thoi_gian_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.agreement_id_cmnd,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ho_va_ten,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_giao_dich,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLShopeePayCT" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_shopeepay_ct
+            (
+                ten_doi_tac,
+                ma_doi_tac,
+                file_name,
+                ten_cua_hang,
+                ma_cua_hang,
+                loai_giao_dich,
+                phuong_thuc_thanh_toan,
+                pham_ci_dich_vu,
+                ma_giao_dich,
+                ma_tham_chieu,
+                ma_giao_dich_goc,
+                ma_tham_chieu_tudt,
+                ma_dv_thanh_toan,
+                gia_tri_giao_dich,
+                ten_voucher,
+                quyen_loi_voucher,
+                ma_cong_thanh_toan,
+                thoi_gian_tao,
+                thoi_gian_cap_nhat,
+                ly_do,
+                trang_thai
+            )
+            VALUES
+            (
+                #{element.ten_doi_tac,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_doi_tac,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ten_cua_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_cua_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.loai_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.phuong_thuc_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.pham_ci_dich_vu,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_tham_chieu,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_giao_dich_goc,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_tham_chieu_tudt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_dv_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.gia_tri_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ten_voucher,            javaType=String,     jdbcType=VARCHAR},
+                #{element.quyen_loi_voucher,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_cong_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thoi_gian_tao,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thoi_gian_cap_nhat,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ly_do,            javaType=String,     jdbcType=VARCHAR},
+                #{element.trang_thai,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLSmartNet" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_smartnet
+            (
+                transaction_date,
+                file_name,
+                ref_no,
+                contract_id,
+                transaction_status,
+                transaction_amount,
+                customer_name,
+                company_name,
+                contract_type,
+                channel,
+                ticket_status,
+                request_type,
+                reason,
+                request_status,
+                approve_date
+            )
+            VALUES
+            (
+                #{element.transaction_date,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ref_no,            javaType=String,     jdbcType=VARCHAR},
+                #{element.contract_id,            javaType=String,     jdbcType=VARCHAR},
+                #{element.transaction_status,            javaType=String,     jdbcType=VARCHAR},
+                #{element.transaction_amount,            javaType=String,     jdbcType=VARCHAR},
+                #{element.customer_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.company_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.contract_type,            javaType=String,     jdbcType=VARCHAR},
+                #{element.channel,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ticket_status,            javaType=String,     jdbcType=VARCHAR},
+                #{element.request_type,            javaType=String,     jdbcType=VARCHAR},
+                #{element.reason,            javaType=String,     jdbcType=VARCHAR},
+                #{element.request_status,            javaType=String,     jdbcType=VARCHAR},
+                #{element.approve_date,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLViettelApp" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_viettel_app
+            (
+                stt,
+                kenh,
+                file_name,
+                ma_nccdv,
+                ten_nccdv,
+                ma_giao_dich,
+                ma_giao_dich_nccdv,
+                ma_thanh_toan,
+                so_tien,
+                ngay_giao_dich,
+                thong_tin_gd,
+                trang_thai,
+                trang_thai_xac_nhan
+            )
+            VALUES
+            (
+                #{element.stt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.kenh,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_nccdv,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ten_nccdv,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_giao_dich_nccdv,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ngay_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thong_tin_gd,            javaType=String,     jdbcType=VARCHAR},
+                #{element.trang_thai,            javaType=String,     jdbcType=VARCHAR},
+                #{element.trang_thai_xac_nhan,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLViettelCounter" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_viettel_counter
+            (
+                stt,
+                ma_nccdv,
+                file_name,
+                kenh_gd,
+                nguon_tien_tt,
+                ma_don_hang,
+                ma_hoa_don,
+                ma_gd_viettel,
+                so_tien_goc,
+                so_tien_tt,
+                ten_kh,
+                so_dt,
+                so_the,
+                ngay_gd,
+                trang_thai
+            )
+            VALUES
+            (
+                #{element.stt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_nccdv,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.kenh_gd,            javaType=String,     jdbcType=VARCHAR},
+                #{element.nguon_tien_tt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_don_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_hoa_don,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_gd_viettel,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien_goc,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien_tt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ten_kh,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_dt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_the,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ngay_gd,            javaType=String,     jdbcType=VARCHAR},
+                #{element.trang_thai,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLViMo" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_vimo
+            (
+                stt,
+                so_hoa_don,
+                file_name,
+                ma_khach_hang,
+                ten_khach_hang,
+                dia_chi_khach_hang,
+                ky_hoa_don,
+                ngay_thanh_toan,
+                so_tien_hoa_don,
+                phu_phi,
+                so_tien_thanh_toan,
+                ma_vimo
+            )
+            VALUES
+            (
+                #{element.stt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_hoa_don,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_khach_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ten_khach_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.dia_chi_khach_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ky_hoa_don,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ngay_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien_hoa_don,            javaType=String,     jdbcType=VARCHAR},
+                #{element.phu_phi,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_vimo,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLVnPayBilling" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_vnpay_billing
+            (
+                stt,
+                refnum,
+                file_name,
+                paiddate,
+                contractno,
+                customername,
+                amount
+            )
+            VALUES
+            (
+                #{element.stt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.refnum,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.paiddate,            javaType=String,     jdbcType=VARCHAR},
+                #{element.contractno,            javaType=String,     jdbcType=VARCHAR},
+                #{element.customername,            javaType=String,     jdbcType=VARCHAR},
+                #{element.amount,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLVNPayGW" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_vnpay_gw
+            (
+                stt,
+                thoi_gian_gd,
+                file_name,
+                ma_giao_dich,
+                chi_nhanh,
+                ma_diem_thu,
+                diem_thu,
+                so_hoa_don,
+                so_hop_dong,
+                ma_don_hang,
+                ma_tru_tien_ma_chuan_chi,
+                ma_khuyen_mai,
+                so_dien_thoai,
+                ten_khach_hang,
+                so_tai_khoan,
+                so_tien_truoc_km,
+                so_tien_sau_km,
+                chi_tiet_san_pham,
+                thong_tin_dat_hang,
+                ngan_hang,
+                loai_the,
+                loai_phat_hanh,
+                dich_vu,
+                kenh_thanh_toan,
+                yeu_cau_tra_gop,
+                trang_thai_tra_gop,
+                ky_han,
+                trang_thai,
+                thoi_gian_doi_soat,
+                ghi_chu,
+                thong_tin_bo_sung
+            )
+            VALUES
+            (
+                #{element.stt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thoi_gian_gd,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.chi_nhanh,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_diem_thu,            javaType=String,     jdbcType=VARCHAR},
+                #{element.diem_thu,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_hoa_don,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_hop_dong,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_don_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_tru_tien_ma_chuan_chi,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_khuyen_mai,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_dien_thoai,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ten_khach_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tai_khoan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien_truoc_km,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien_sau_km,            javaType=String,     jdbcType=VARCHAR},
+                #{element.chi_tiet_san_pham,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thong_tin_dat_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ngan_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.loai_the,            javaType=String,     jdbcType=VARCHAR},
+                #{element.loai_phat_hanh,            javaType=String,     jdbcType=VARCHAR},
+                #{element.dich_vu,            javaType=String,     jdbcType=VARCHAR},
+                #{element.kenh_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.yeu_cau_tra_gop,            javaType=String,     jdbcType=VARCHAR},
+                #{element.trang_thai_tra_gop,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ky_han,            javaType=String,     jdbcType=VARCHAR},
+                #{element.trang_thai,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thoi_gian_doi_soat,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ghi_chu,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thong_tin_bo_sung,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLVnPost" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_vnpost
+            (
+                record_number,
+                file_name,
+                transaction_date,
+                transaction_time,
+                transaction_ref_no,
+                po_code,
+                payment_mode,
+                payment_amount,
+                payer_id,
+                payer_name,
+                payer_address,
+                payer_tel,
+                transaction_info,
+                add_info1,
+                add_info2,
+                add_info3,
+                add_info4,
+                add_info5,
+                add_info6,
+                add_info7,
+                add_info8,
+                note_results
+            )
+            VALUES
+            (
+                #{element.record_number,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.transaction_date,            javaType=String,     jdbcType=VARCHAR},
+                #{element.transaction_time,            javaType=String,     jdbcType=VARCHAR},
+                #{element.transaction_ref_no,            javaType=String,     jdbcType=VARCHAR},
+                #{element.po_code,            javaType=String,     jdbcType=VARCHAR},
+                #{element.payment_mode,            javaType=String,     jdbcType=VARCHAR},
+                #{element.payment_amount,            javaType=String,     jdbcType=VARCHAR},
+                #{element.payer_id,            javaType=String,     jdbcType=VARCHAR},
+                #{element.payer_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.payer_address,            javaType=String,     jdbcType=VARCHAR},
+                #{element.payer_tel,            javaType=String,     jdbcType=VARCHAR},
+                #{element.transaction_info,            javaType=String,     jdbcType=VARCHAR},
+                #{element.add_info1,            javaType=String,     jdbcType=VARCHAR},
+                #{element.add_info2,            javaType=String,     jdbcType=VARCHAR},
+                #{element.add_info3,            javaType=String,     jdbcType=VARCHAR},
+                #{element.add_info4,            javaType=String,     jdbcType=VARCHAR},
+                #{element.add_info5,            javaType=String,     jdbcType=VARCHAR},
+                #{element.add_info6,            javaType=String,     jdbcType=VARCHAR},
+                #{element.add_info7,            javaType=String,     jdbcType=VARCHAR},
+                #{element.add_info8,            javaType=String,     jdbcType=VARCHAR},
+                #{element.note_results,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLVNPTPay" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_vnptpay
+            (
+                stt,
+                he_thong_giao_dich,
+                file_name,
+                kenh_thu,
+                ngan_hang_kenh_thanh_toan,
+                magd_vnpt_pay,
+                phi_giao_dich_kh,
+                gia_tri_hoa_don,
+                ngay_giao_dich,
+                trang_thai,
+                ngay_cap_nhat_giao_dich,
+                ma_khach_hang,
+                dich_vu,
+                ma_giao_dich_merchant,
+                ma_giao_dich_partner,
+                thong_tin_thanh_toan,
+                ky_hoa_don,
+                ten_khach_hang,
+                thong_tin_them,
+                ma_giao_dich_hoan,
+                trang_thai_hoan_tien,
+                thoi_gian_khoi_tao,
+                thoi_gian_cap_nhat,
+                gia_tri_hoan,
+                phi_hoan,
+                ben_chiu_phi_hoan,
+                phi_giao_dich,
+                trang_thai_hoan_phigd
+            )
+            VALUES
+            (
+                #{element.stt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.he_thong_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.kenh_thu,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ngan_hang_kenh_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.magd_vnpt_pay,            javaType=String,     jdbcType=VARCHAR},
+                #{element.phi_giao_dich_kh,            javaType=String,     jdbcType=VARCHAR},
+                #{element.gia_tri_hoa_don,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ngay_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.trang_thai,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ngay_cap_nhat_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_khach_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.dich_vu,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_giao_dich_merchant,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_giao_dich_partner,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thong_tin_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ky_hoa_don,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ten_khach_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thong_tin_them,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_giao_dich_hoan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.trang_thai_hoan_tien,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thoi_gian_khoi_tao,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thoi_gian_cap_nhat,            javaType=String,     jdbcType=VARCHAR},
+                #{element.gia_tri_hoan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.phi_hoan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ben_chiu_phi_hoan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.phi_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.trang_thai_hoan_phigd,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <insert id="insSapCLZaloPay" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="element" index="index">
+            INTO mafcdb.mafc_sap_cl_zalopay
+            (
+                stt,
+                ngay_giao_dich,
+                file_name,
+                ma_gd_merchant,
+                ma_gd_zalopay,
+                app_user,
+                ma_kh,
+                ten_kh,
+                ten_app,
+                kenh_thanh_toan,
+                nguon_thanh_toan,
+                platform,
+                hinh_thuc_thanh_toan,
+                trang_thai_giao_dich,
+                mo_ta,
+                ma_khuyen_mai_mc,
+                so_the,
+                approve_code,
+                ma_ngan_hang,
+                bank_trace_no,
+                ma_chuong_trinh_mc,
+                thong_tin_ma_tra_ve,
+                ma_trang_thai_ngan_hang,
+                so_tien_giao_dich,
+                giam_gia_uu_dai,
+                phi_nguoi_dung,
+                so_tien_thanh_toan,
+                so_tien_cashback,
+                ma_cashback_campaign,
+                mo_ta_chuong_trinh_cashback,
+                email,
+                phone,
+                dia_chi,
+                voucher_su_dung,
+                voucher_nhan_duoc,
+                ma_khuyen_mai,
+                so_tien_merchant_taitro,
+                group_sale_amount,
+                group_sale_discount,
+                columninfo,
+                ngay_xuly_hoantra,
+                so_tien_hoantra,
+                merchant_userid
+            )
+            VALUES
+            (
+                #{element.stt,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ngay_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.file_name,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_gd_merchant,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_gd_zalopay,            javaType=String,     jdbcType=VARCHAR},
+                #{element.app_user,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_kh,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ten_kh,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ten_app,            javaType=String,     jdbcType=VARCHAR},
+                #{element.kenh_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.nguon_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.platform,            javaType=String,     jdbcType=VARCHAR},
+                #{element.hinh_thuc_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.trang_thai_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.mo_ta,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_khuyen_mai_mc,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_the,            javaType=String,     jdbcType=VARCHAR},
+                #{element.approve_code,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_ngan_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.bank_trace_no,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_chuong_trinh_mc,            javaType=String,     jdbcType=VARCHAR},
+                #{element.thong_tin_ma_tra_ve,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_trang_thai_ngan_hang,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien_giao_dich,            javaType=String,     jdbcType=VARCHAR},
+                #{element.giam_gia_uu_dai,            javaType=String,     jdbcType=VARCHAR},
+                #{element.phi_nguoi_dung,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien_thanh_toan,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien_cashback,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_cashback_campaign,            javaType=String,     jdbcType=VARCHAR},
+                #{element.mo_ta_chuong_trinh_cashback,            javaType=String,     jdbcType=VARCHAR},
+                #{element.email,            javaType=String,     jdbcType=VARCHAR},
+                #{element.phone,            javaType=String,     jdbcType=VARCHAR},
+                #{element.dia_chi,            javaType=String,     jdbcType=VARCHAR},
+                #{element.voucher_su_dung,            javaType=String,     jdbcType=VARCHAR},
+                #{element.voucher_nhan_duoc,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ma_khuyen_mai,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien_merchant_taitro,            javaType=String,     jdbcType=VARCHAR},
+                #{element.group_sale_amount,            javaType=String,     jdbcType=VARCHAR},
+                #{element.group_sale_discount,            javaType=String,     jdbcType=VARCHAR},
+                #{element.columninfo,            javaType=String,     jdbcType=VARCHAR},
+                #{element.ngay_xuly_hoantra,            javaType=String,     jdbcType=VARCHAR},
+                #{element.so_tien_hoantra,            javaType=String,     jdbcType=VARCHAR},
+                #{element.merchant_userid,            javaType=String,     jdbcType=VARCHAR}
+            )
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+
+    <select id="procSyncColl" parameterType ="java.util.HashMap" statementType="CALLABLE">
+        { call MAFCDB.MAFC_SAP_SYNC_COLL(
+            #{P_COLLECTOR_NAME, javaType=String, jdbcType=VARCHAR, mode=IN},
+            #{P_RESNUM, jdbcType = INTEGER, javaType = java.lang.Integer, mode=OUT},
+            #{P_RESULT, javaType=String, jdbcType=VARCHAR, mode=OUT}
+        )}
+    </select>
+
+    <select id="procDelColl" parameterType ="java.util.HashMap" statementType="CALLABLE">
+        { call MAFCDB.MAFC_SAP_DEL_COLL(
+            #{P_COLLECTOR_NAME, javaType=String, jdbcType=VARCHAR, mode=IN},
+            #{P_FILE_NAME, javaType=String, jdbcType=VARCHAR, mode=IN},
+            #{P_RES, jdbcType = INTEGER, javaType = java.lang.Integer, mode=OUT}
+        )}
+    </select>
+
+    <select id="getSapCollectorConfig" resultMap="SapCLCollectorConfig" parameterType="map">
+        SELECT table_name, column_name, row_num, index_num, update_date, note
+        FROM mafcdb.mafc_sap_coll_config
+        WHERE table_name = #{fileName}
+    </select>
+
+</mapper>

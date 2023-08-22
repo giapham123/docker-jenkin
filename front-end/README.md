@@ -1,6 +1,4 @@
-# Goomfi Admin Page
-
-Admin page for [Goomfi](https://goomfi.com/) customers.
+# HOME SYSTEM
 
 ## Requirements
 
@@ -14,9 +12,8 @@ Admin page for [Goomfi](https://goomfi.com/) customers.
 
 Short guide how to install dependencies. **FOR EXAMPLE:**
 
-1. `git clone git@bitbucket.org:verkkoaps/goomfi-admin-page.git`
+1. `git clone git@gitlab.dounets.com/mirae-dev/home-system.git`
 2. `yarn install`
-3. Download client secrets from Drive https://drive.google.com/open?id=1234abcd1234abcd1234abcd
 
 ## Building
 

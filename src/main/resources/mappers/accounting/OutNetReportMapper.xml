@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.OutNetReportMapper">
+    <select id="getOutNetReportData" resultType="outNetReportModel" parameterType="outNetReportModel">
+        SELECT DISTINCT
+            A.RECEIPT_DATE,
+            TO_CHAR(A.REPORT_DATE, 'MM/DD/YYYY')  reportDate,
+            A.AGREEMENTID agreementId,
+            A.AGREEMENTNO agreementNo,
+            A.CUSTOMERNAME customerName,
+            A.COLLECTION_FEE collectionFee,
+            A.EMI_AMT emiAtm,
+            A.LAST_EMI lastEmi,
+            TO_CHAR(A.LAST_DUEDATE, 'MM/DD/YYYY') lastDuedate,
+            A.RECEIPT_AMT receiptAtm,
+            TO_CHAR(A.RECEIPT_DATE, 'MM/DD/YYYY') receiptDate,
+            A.NET_RECEIVEABLE_AT_RECEIPTDATE netReceiveableAtReceiptDate,
+            A.NET_RECEIVEABLE_AT_REPORTTDATE netReceiveableAtReportDate,
+            A.FORE_CLOSURE_CHARGE_AMT forceClosureChargeAmt
+        FROM  (select rank() over (partition by t.AGREEMENTID order by t.report_date desc) rn, t.*
+        from SQLSERVER1.MAFC_OUT_NET_temp t ) A, java_leama.lea_agreement_dtl B
+        WHERE 1=1
+        AND A.AGREEMENTID = B.agreementid
+        AND B.STATUS = 'A'
+        <if test="agreementId != null and agreementId != ''">
+            AND A.AGREEMENTID = #{agreementId}
+        </if>
+        <if test="receiptFrom != null and receiptTo != null">
+            AND (TRUNC(A.RECEIPT_DATE) BETWEEN TO_DATE(#{receiptFrom}, 'MM-DD-YYYY')
+            AND TO_DATE(#{receiptTo}, 'MM-DD-YYYY'))
+        </if>
+        AND TRUNC(A.REPORT_DATE) = TRUNC(SYSDATE)
+        AND rn = 1
+        ORDER BY A.RECEIPT_DATE DESC
+    </select>
+</mapper>

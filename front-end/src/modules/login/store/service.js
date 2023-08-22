@@ -14,7 +14,13 @@ class LoginService extends Service {
    * @param {email: String, password: String} params
    */
   async login(params) {
-    let result = await this.post('/login/auth', params);
+    let result = null;
+    if (params.isLdap == 0) {
+      result = await this.post('/login/auth', params);
+    } else {
+      result = await this.post('/login/auth-ldap', params);
+    }
+
     if (result.status == 200) {
       return result.data;
     }
@@ -27,6 +33,31 @@ class LoginService extends Service {
 
   authToken(token) {
     return this.get('/authenticate', { token: token });
+  }
+
+  async saveUserLogin(params) {
+    let result = await this.post('/login/save-user-login', params);
+    return result;
+  }
+
+  async removeUserLogin(param) {
+    let result = await this.get('/login/remove-user-login', param);
+    return result;
+  }
+
+  async checkUserIsLogin(params) {
+    let result = await this.post('/login/check-user-islogin', params);
+    return result;
+  }
+
+  async updateTime(params) {
+    let result = await this.post('/login/update-timeout', params);
+    return result;
+  }
+
+  async getKey(params) {
+    let result = await this.get('/login/get-key', params);
+    return result;
   }
 }
 

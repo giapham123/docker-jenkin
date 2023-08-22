@@ -4,27 +4,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
-import java.util.List;
 
 public class User {
 
     @JsonIgnore
     private Long id;
 
-    @JsonProperty("account_id")
     private String accountId;
 
     @JsonIgnore
     private String password;
 
+    @JsonIgnore
     private boolean isBlocked;
 
+    @JsonIgnore
     private boolean isDeleted;
 
-    @JsonProperty("status")
+    @JsonIgnore
     private long isStatus;
 
-    @JsonProperty("admin")
+    @JsonIgnore
     private long isAdmin;
 
     @JsonIgnore
@@ -46,7 +46,7 @@ public class User {
     private String departmentId;
 
     @JsonIgnore
-    private List<Role> roles;
+    private String targetProfileTable;
 
     public User() {}
 
@@ -159,11 +159,11 @@ public class User {
         this.departmentId = departmentId;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public String getTargetProfileTable() {
+        return targetProfileTable;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setTargetProfileTable(String targetProfileTable) {
+        this.targetProfileTable = targetProfileTable;
     }
 }

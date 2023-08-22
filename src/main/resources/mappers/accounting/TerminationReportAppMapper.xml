@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.TerminationReportAppMapper">
+    <resultMap id="terminationReportAppModel" type="TerminationReportAppModel">
+        <result column="Scheme" property="scheme"></result>
+        <result column="agreementno" property="agreementNo"></result>
+        <result column="agreementid" property="agreementId"></result>
+        <result column="principle" property="principalOs"></result>
+        <result column="installments" property="pendingInst"></result>
+        <result column="currentmonthint" property="currentMonthint"></result>
+        <result column="currlpi" property="currLpi"></result>
+        <result column="overduecharges" property="overDuecharges"></result>
+        <result column="Foreclosurecharge" property="forceClosureCharges"></result>
+        <result column="excessamount" property="excessAmount"></result>
+        <result column="NetReceivables" property="netReceiable"></result>
+        <result column="NpaStage" property="npaStage"></result>
+        <result column="dpd" property="dpd"></result>
+        <result column="lastemi" property="lastEmi"></result>
+        <result column="lastduedate" property="lastDuedt"></result>
+        <result column="no" property="no"></result>
+    </resultMap>
+    <select id="getDataTerminationReportApp"  resultMap="terminationReportAppModel" parameterType="TerminationReportAppModel">
+        SELECT
+        product                             product,
+        scheme                              scheme,
+        agreementno                         agreementno,
+        agreementid                         agreementid,
+        principle                           principle,
+        installments                        installments,
+        currentmonthint                     currentmonthint,
+        currlpi                             currlpi,
+        overduecharges                      overduecharges,
+        fore_closure_charge                 foreclosurecharge,
+        excessamount                        excessamount,
+        net_receivables                     netreceivables,
+        npa_stage                           npastage,
+        dpd                                 dpd,
+        last_emi                            lastemi,
+        max_instlnum                        instlamt,
+        last_duedate lastduedate,
+        ADV_AMT advancedInter,
+        DEDUCT_AMT deductAmount,
+        NET_AF_DEDUCT netReceiAfterDeduct,
+        WO_AMT waiveOffAmount,
+        line_number no
+        FROM
+        (
+        SELECT
+        product,
+        scheme,
+        agreementno,
+        agreementid,
+        principle,
+        installments,
+        currentmonthint,
+        currlpi,
+        overduecharges,
+        fore_closure_charge,
+        excessamount,
+        net_receivables,
+        npa_stage,
+        dpd,
+        last_emi,
+        max_instlnum,
+        to_char(last_duedate, 'MM/DD/YYYY') last_duedate,
+        ADV_AMT,
+        DEDUCT_AMT,
+        NET_AF_DEDUCT,
+        WO_AMT,
+        ROW_NUMBER()
+        OVER(
+        ORDER BY
+            last_duedate DESC
+        )                                   line_number
+        FROM
+        sqlserver1.mafc_termi_sim_rbt where 1 = 1
+        <if test="agreementId != null and agreementId != ''">
+            AND agreementid = #{agreementId}
+        </if>
+        )
+        WHERE
+        line_number BETWEEN 10 * (#{page} - 1) + 1 AND 10 * #{page}
+    </select>
+
+    <select id="getProcTermiFinish"  resultType="int">
+        SELECT COUNT(*) FROM SQLSERVER.monitor_report_eod WHERE
+        PROC_NAME = 'proc_termi_lms_main'
+        AND TRUNC(RUN_DATE) = TRUNC(SYSDATE) AND ERROR_MSG = 'finish'
+    </select>
+
+    <select id="countAllDataInTerminal"  resultType="int"  parameterType="TerminationReportAppModel">
+        select count(*) from sqlserver1.mafc_termi_sim_rbt where 1=1
+        <if test="agreementId != null and agreementId != ''">
+            AND agreementid = #{agreementId}
+        </if>
+    </select>
+
+    <select id="exportTerminationReportAppData"  resultMap="terminationReportAppModel" parameterType="TerminationReportAppModel">
+        SELECT
+        Product                           product,
+        Scheme                            scheme,
+        agreementno                         agreementno,
+        agreementid                         agreementid,
+        principle                           principle,
+        installments                        installments,
+        currentmonthint                     currentmonthint,
+        currlpi                             currlpi,
+        overduecharges                      overduecharges,
+        fore_closure_charge                 foreclosurecharge,
+        excessamount                        excessamount,
+        net_receivables                     netreceivables,
+        npa_stage                           npastage,
+        dpd                                 dpd,
+        last_emi                            lastemi,
+        max_instlnum                        instlamt,
+        ADV_AMT advancedInter,
+        DEDUCT_AMT deductAmount,
+        NET_AF_DEDUCT netReceiAfterDeduct,
+        WO_AMT waiveOffAmount,
+        to_char(last_duedate, 'MM/DD/YYYY') AS "lastduedate"
+        FROM
+        sqlserver1.mafc_termi_sim_rbt where 1 = 1
+        <if test="agreementId != null and agreementId != ''">
+            AND agreementid = #{agreementId}
+        </if>
+        order by last_duedate DESC
+    </select>
+</mapper>

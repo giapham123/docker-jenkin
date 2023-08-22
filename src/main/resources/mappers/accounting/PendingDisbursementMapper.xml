@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.PendingDisbursementMapper">
+    <insert id="insertDataPendingDisbur">
+        INSERT INTO sqlserver1.mafc_sap_ids_process (AGREEMENTID, TYPE, USER_MAKER) VALUES (#{agreementId},'PD', #{userLogin})
+    </insert>
+
+    <select id="isExistAgreementId" resultType="int">
+        select count(*) from  sqlserver1.mafc_sap_ids_process  where AGREEMENTID = #{agreementId} AND TYPE='PD'
+    </select>
+
+    <delete id="deleteAgreementId">
+        DELETE FROM  sqlserver1.mafc_sap_ids_process WHERE  AGREEMENTID = #{agreementId} AND TYPE='PD' AND  (runyn <![CDATA[=]]> 'N' OR runyn IS NULL)
+    </delete>
+
+    <select id="getDataPendingDisbursement" resultType="PendingDisbursementModel">
+        SELECT
+        a.agreementid agreementId,
+        TO_CHAR(a.run_date, 'MM/DD/YYYY') AS uptDt ,
+        a.runyn AS runYn,
+        a.error_msg AS errorMsg,
+        a.user_maker userLogin
+        FROM
+        sqlserver1.mafc_sap_ids_process a
+        WHERE 1=1 AND TYPE='PD'
+        <if test="agreementId != null and agreementId != ''">
+           and a.agreementid =#{agreementId}
+        </if>
+    </select>
+
+    <select id="processPending" parameterType="java.util.Map" statementType="CALLABLE">
+        { call SQLSERVER1.mafc_sap_ids_process_proc(
+        #{curDt,mode=IN, jdbcType=DATE},
+        #{type,mode=IN, jdbcType=VARCHAR},
+        #{usrLg,mode=IN, jdbcType=VARCHAR},
+        #{out,jdbcType=VARCHAR,mode=OUT})
+        }
+    </select>
+</mapper>

@@ -7,7 +7,7 @@ import java.util.Map;
 public class LoginResponse {
 
     @JsonProperty("user_info")
-    private User account;
+    private UserProfiles account;
 
     @JsonProperty("access_token")
     private String accessToken;
@@ -21,11 +21,11 @@ public class LoginResponse {
     @JsonProperty("user_permissions")
     private Map<String, Feature> permissions;
 
-    public User getAccount() {
+    public UserProfiles getAccount() {
         return account;
     }
 
-    public void setAccount(User account) {
+    public void setAccount(UserProfiles account) {
         this.account = account;
     }
 

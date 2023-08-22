@@ -37,4 +37,6 @@ public interface CommonStrings {
     String DELETE_FAIL                          = "Delete data fail";
 
     String EXIST_ACCOUNTID                      = "Account Id is Exist";
+
+    String DATA_SOURCE_ORCALE                   = "oracle";
 }

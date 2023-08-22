@@ -1,14 +1,19 @@
 package com.dou.adm.services;
 
 import com.dou.adm.mappers.UserMapper;
-import com.dou.adm.models.Feature;
-import com.dou.adm.models.Permission;
-import com.dou.adm.models.User;
+import com.dou.adm.models.*;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +25,9 @@ public class UserService  {
 
     @Autowired
     private UserMapper mapper;
+
+    @Value("${uri-auth-ldap}")
+    private  String uri;
 
     public User loginUser(String accountId){
         User user = new User();
@@ -60,6 +68,17 @@ public class UserService  {
         return permissions;
     }
 
+    public UserProfiles retrieveUserProfile(String targetTable, String accountId) {
+        try {
+            if (StringUtils.hasText(targetTable)) {
+                return this.mapper.retrieveUserProfile(targetTable, accountId);
+            }
+        } catch (Exception e) {
+            LOGGER.error(String.format("Error occurred while trying to retrieve UserProfile of %s from Database", accountId), e);
+        }
+        return null;
+    }
+
     public int changePassword(String accountId, String password ){
         int result = 0;
         try {
@@ -69,4 +88,23 @@ public class UserService  {
         }
         return result;
     }
+
+    public LdapRes loginWithLDAP(String accountId, String password){
+        RestTemplate restTemplate = new RestTemplate();
+        LdapRes resApi = new LdapRes();
+        Map param = new HashMap();
+        param.put("userName",accountId);
+        param.put("password",password);
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(param, header);
+        ResponseEntity<String> response = null;
+        response = restTemplate.postForEntity(uri, entity, String.class);
+        JSONObject array = new JSONObject(response.getBody());
+        String isAuth = array.get("success").toString();
+        resApi.setSuccess(Boolean.parseBoolean(isAuth));
+        resApi.setMessage( array.get("message").toString());
+        return resApi;
+    }
+
 }

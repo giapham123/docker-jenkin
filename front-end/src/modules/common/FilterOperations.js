@@ -153,6 +153,14 @@ const FILTER_OPERATIONS = {
       icon: 'fa-not-equal',
       exec: (before, after) => before.diff(after, 'days') > 0
     }
+  },
+  DROPDOWN: {
+    EQUALS: {
+      code: 'EQUALS',
+      text: 'Equals',
+      icon: 'fa-equals',
+      exec: (before, after) => before === after
+    }
   }
 };
 
@@ -172,7 +180,9 @@ export const FILTER_ULTIS = {
     ['STRING'](base, search, operation) {
       return operation.exec(base, search);
     },
-
+    ['DROPDOWN'](base, search, operation) {
+      return operation.exec(base, search);
+    },
     ['DATE'](base, search, operation) {
       if (base == null || search == null) {
         return false;
@@ -222,6 +232,9 @@ export const FILTER_ULTIS = {
         return val == 'checked';
       }
       return false;
+    },
+    ['DROPDOWN'](val) {
+      return _.toLower(val);
     }
   },
 
@@ -240,17 +253,21 @@ export const FILTER_ULTIS = {
 
     ['BOOL'](val) {
       return val == '';
+    },
+    ['DROPDOWN'](val) {
+      return val == '';
     }
   }
 };
 
 const SUPPORT_DATE_FORMAT = ['YYYY-MM-DD', 'MM/DD/YYYY'];
-export const SUPPORT_TYPE = ['STRING', 'DATE', 'NUMBER', 'BOOL'];
+export const SUPPORT_TYPE = ['STRING', 'DATE', 'NUMBER', 'BOOL', 'DROPDOWN'];
 
 FILTER_OPERATIONS.DEFAULTS = {
   STRING: FILTER_OPERATIONS.STRING.INCLUDES,
   NUMBER: FILTER_OPERATIONS.NUMBER.INCLUDES,
-  DATE: FILTER_OPERATIONS.DATE.EQUALS
+  DATE: FILTER_OPERATIONS.DATE.EQUALS,
+  DROPDOWN: FILTER_OPERATIONS.DROPDOWN.EQUALS
 };
 
 export default FILTER_OPERATIONS;

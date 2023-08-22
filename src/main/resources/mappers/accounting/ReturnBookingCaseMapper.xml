@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.ReturnBookingCaseMapper">
+    <select id="getReturnBookingCase"  resultType="ReturnBookingCaseModel" parameterType="ReturnBookingCaseModel">
+        SELECT
+        APPID appId,
+        AMT_Return amtReturn,
+        BatchID batchId,
+        to_char(Upload_date, 'MM/DD/YYYY')  uploadDt ,
+        "TYPE" as type
+        FROM
+        SQLSERVER1.MAFC_Int_Return_booking
+        WHERE 1=1
+        <if test="type != null and type != 'ALL'">
+            AND TYPE = #{type}
+        </if>
+        <if test="fromDt != null and toDt != null">
+            AND TRUNC(Upload_date) BETWEEN to_date(#{fromDt}, 'MM-DD-YYYY') AND to_date(#{toDt}, 'MM-DD-YYYY')
+        </if>
+        ORDER BY
+        BatchID
+    </select>
+</mapper>

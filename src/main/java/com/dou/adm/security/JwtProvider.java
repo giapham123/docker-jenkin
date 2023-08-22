@@ -1,9 +1,12 @@
 package com.dou.adm.security;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -16,30 +19,47 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Date;
 
+import static com.dou.adm.security.JwtUtils.PROFILES;
+
 
 /**
  * Created by Tu.Tran on 9/20/2018.
  */
 @Service
 public class JwtProvider {
-    private static final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtProvider.class);
     private static final String jwtSecret = new BigInteger(130, new SecureRandom()).toString(32);
 
     @Value("${jwt.expire.hours}")
     private int jwtExpireHrs;
 
-    public String generateToken(JwtUser jwtUser) {
+    @Autowired
+    private ObjectMapper objectMapper;
 
+    public String generateToken(JwtUser jwtUser) {
         Date expireDate = new DateTime().plusHours(jwtExpireHrs).toDate();
 
+        String profileJsonData = null;
+        try {
+            profileJsonData = this.objectMapper.writeValueAsString(jwtUser.getProfiles());
+        } catch (JsonProcessingException e) {
+            LOGGER.error(String.format("Can not write UserProject of %s to JSON string", jwtUser.getUsername()), e);
+        }
+
         return Jwts.builder()
+                // HEADERS
                 .setId(Long.toString(jwtUser.getId()))
                 .setSubject(jwtUser.getUsername())
-                .claim("auth",jwtUser.getAuthorities())
-                .claim("isAdmin", jwtUser.getIsAdmin())
+
+                // PAYLOADS
+                .claim(PROFILES, profileJsonData)
+
+                // SIGNATURE
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
+
+                // BUILD TOKEN
                 .compact();
     }
 
@@ -48,13 +68,8 @@ public class JwtProvider {
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
-        long isAdmin = 0;
-        try {
-            isAdmin = Long.valueOf(String.valueOf(claims.get("isAdmin")));
-        } catch (Exception e) { /*Do nothing*/ }
 
-        JwtUser jwtUser = new JwtUser(claims.getSubject(), isAdmin);
-        return jwtUser;
+        return JwtUtils.retrieveUserFromClaims(claims, objectMapper);
     }
 
     public boolean validateToken(String authToken) {
@@ -62,15 +77,15 @@ public class JwtProvider {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException ex) {
-            logger.error("Invalid JWT signature");
+            LOGGER.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
-            logger.error("Invalid JWT token");
+            LOGGER.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            logger.error("Expired JWT token");
+            LOGGER.warn("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            logger.error("Unsupported JWT token");
+            LOGGER.error("Unsupported JWT token");
         } catch (IllegalArgumentException ex) {
-            logger.error("JWT claims string is empty.");
+            LOGGER.error("JWT claims string is empty.");
         }
         return false;
     }
@@ -84,7 +99,7 @@ public class JwtProvider {
             return BCrypt.checkpw(originalPassword, dbPassword);
         }
         catch (Exception e){
-            logger.error(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return false;
     }
@@ -99,7 +114,7 @@ public class JwtProvider {
 
             shaHex = DatatypeConverter.printHexBinary(digest);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-            logger.error(ex.getMessage());
+            LOGGER.error(ex.getMessage());
         }
         return shaHex;
     }

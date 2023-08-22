@@ -1,24 +1,22 @@
 <template>
-  <v-app id="401">
-    <v-container fluid fill-height>
-      <v-layout align-center justify-center>
-        <div class="mr-3 hidden-sm-and-down">
-          <img src="/static/error/401.svg" alt="" />
+  <v-container fluid fill-height>
+    <v-layout align-center justify-center>
+      <div class="mr-3 hidden-sm-and-down">
+        <img src="/static/error/401.svg" alt="" />
+      </div>
+      <div class="text-md-center">
+        <h1>401</h1>
+        <h2 class="my-3 headline ">
+          Sorry, you don't have permission on page.
+        </h2>
+        <div>
+          <v-btn class="white--text" color="#00695c" @click="goHome">
+            Go Home
+          </v-btn>
         </div>
-        <div class="text-md-center">
-          <h1>401</h1>
-          <h2 class="my-3 headline ">
-            Sorry, you don't have permission on page.
-          </h2>
-          <div>
-            <v-btn class="white--text" color="#00695c" @click="goHome">
-              Go Home
-            </v-btn>
-          </div>
-        </div>
-      </v-layout>
-    </v-container>
-  </v-app>
+      </div>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>

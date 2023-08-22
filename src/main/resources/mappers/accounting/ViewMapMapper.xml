@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.ViewMapMapper">
+    <select id="getDataViewMap" resultType="ViewMapModel" parameterType="ViewMapModel">
+        SELECT
+        b.batchid batchId,
+        b.trans_type_code transType,
+        c.trans_type_desc transDesc,
+        b.chancel_code channelCd,
+        d.channel_desc channelDesc,
+        a.caseid agreementId,
+        a.dramt debitAmt,
+        a.cramt creditAmt,
+        to_char(a.voucherdate, 'MM/DD/YYYY') transDt,
+        a.sapgl sapGl,
+        a.remarks remarks,
+        a.lea_voucherid leaVoucherId,
+        to_char(a.run_date, 'MM/DD/YYYY HH24:MI:SS') updateDt,
+        a.sapyn_1 sapYn
+        FROM
+        sqlserver1.mafc_id_sapgl a
+        INNER JOIN sqlserver1.mafc_sap_txn_import b ON
+        a.lea_voucherid = b.lea_voucherid
+        LEFT JOIN sqlserver1.mafc_sap_txn_type c ON
+        b.trans_type_code = c.trans_type_code
+        LEFT JOIN sqlserver1.mafc_sap_channel d ON
+        b.chancel_code = d.channel_code
+        WHERE 1=1
+        AND a.rm_type = 'IMN'
+        <choose>
+            <when test="sapYn.toString() == 'Y'.toString()">
+                AND a.sapyn_1 = 'Y'
+            </when>
+            <when test="sapYn.toString() == 'N'.toString()">
+                AND a.sapyn_1 is null
+            </when>
+        </choose>
+        <if test="batchId != null and batchId != ''">
+            AND b.BATCHID = #{batchId}
+        </if>
+        <if test="agreementId != null and agreementId != ''">
+            AND  A.caseid = #{agreementId}
+        </if>
+        <if test="channelCd != null and channelCd != ''">
+            AND b.chancel_code = #{channelCd}
+        </if>
+        <if test="sapGl != null and sapGl != ''">
+            AND a.sapgl like '%' ||  #{sapGl} || '%'
+        </if>
+        <if test="remarks != null and remarks != ''">
+            AND  UPPER(a.remarks) like UPPER('%' || #{remarks} || '%')
+        </if>
+        <if test="transType != null and transType != ''">
+            AND b.TRANS_TYPE_CODE = #{transType}
+        </if>
+        <if test="transDt != null and transDt != ''">
+            AND TRUNC(A.voucherdate) <![CDATA[=]]> TO_DATE(#{transDt}, 'MM-DD-YYYY')
+        </if>
+        <if test="updateDt != null and updateDt != ''">
+            AND TRUNC(A.run_date) <![CDATA[=]]> TO_DATE(#{updateDt}, 'MM-DD-YYYY')
+        </if>
+        ORDER BY
+        b.batchid,
+        b.trans_type_code,
+        a.lea_voucherid,
+        a.cramt
+    </select>
+</mapper>

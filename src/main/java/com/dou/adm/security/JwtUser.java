@@ -1,51 +1,40 @@
 package com.dou.adm.security;
 
 import com.dou.adm.models.User;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.dou.adm.models.UserProfiles;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
+public class JwtUser {
 
-public class JwtUser implements UserDetails {
-
+    @JsonIgnore
     private Long id;
+
     private String username;
+
     private String password;
-    private long isAdmin;
-    private Collection<? extends GrantedAuthority> authorities;
 
+    @JsonIgnore
+    UserProfiles profiles;
 
-    public JwtUser(){}
+    public JwtUser() {}
 
-    public JwtUser(String username, long isAdmin) {
-        this.username = username.toUpperCase();
-        this.isAdmin = isAdmin;
+    public JwtUser(Long id, String username){
+        this.id = id;
+        this.username = username;
     }
 
-    public JwtUser(Long id, String username, String password, long isAdmin, Collection<? extends GrantedAuthority> authorities) {
+    public JwtUser(Long id, String username, String password) {
         this.id = id;
-        this.username = username.toUpperCase();
+        this.username = username;
         this.password = password;
-        this.isAdmin = isAdmin;
-        this.authorities = authorities;
     }
 
     public static JwtUser create(User user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
-                new SimpleGrantedAuthority(role.getRoleCd())
-        ).collect(Collectors.toList());
-
         return new JwtUser(
                 user.getId(),
-                user.getAccountId(),
-                user.getPassword(),
-                0,
-                authorities
+                user.getAccountId()
         );
     }
 
@@ -57,59 +46,28 @@ public class JwtUser implements UserDetails {
         this.id = id;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        this.authorities = authorities;
+    public UserProfiles getProfiles() {
+        return profiles;
     }
 
-    public long getIsAdmin() {
-        return isAdmin;
-    }
-
-    public void setIsAdmin(long isAdmin) {
-        this.isAdmin = isAdmin;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+    public void setProfiles(UserProfiles profiles) {
+        this.profiles = profiles;
     }
 
     @Override

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.MonthlyDisbursalReportMapper">
+
+    <resultMap type="com.dou.accounting.models.MonthlyDisbursalReportModel" id="mappingCodeMap3">
+        <result property="logDt" column="DATE_1"/>
+        <result property="product" column="PRODUCT"/>
+        <result property="countApp" column="NO_OF_APP_2"/>
+        <result property="includedInsAmt" column="INCLUDED_INS_AMT_3"/>
+        <result property="notInsAmt" column="NOT_INS_AMT_4"/>
+        <result property="insAmt" column="INS_AMT_5"/>
+        <result property="noAppActual" column="NO_OF_ACT_APP_6"/>
+        <result property="actualCashDis" column="ACT_CASH_DISB_7"/>
+        <result property="actualCashDisInIns" column="ACT_CASH_DISB_INS_8"/>
+        <result property="pendingDisAmount" column="PEND_DISB_AMT_9"/>
+        <result property="accumApp" column="ACCUM_APP"/>
+        <result property="AccumDisAmountInIns" column="ACCUM_DISB_AMT_10"/>
+    </resultMap>
+
+    <resultMap type="com.dou.accounting.models.MonthlyDisbursalReportModel" id="mappingCodeMap4">
+        <result property="product" column="PRODUCT"/>
+        <result property="monthRpt" column="MONTH_RPT"/>
+        <result property="yearRpt" column="YEAR_RPT"/>
+        <result property="countApp" column="NO_OF_APP"/>
+        <result property="disAmout" column="DISB_AMT"/>
+    </resultMap>
+
+    <select id="getDataMonthlyDisbursalReport" parameterType="java.util.Map" statementType="CALLABLE">
+        { call SQLSERVER1.PRC_MAFC_DISBRPT_VIEW4(
+        #{date, jdbcType=VARCHAR,mode=IN},
+        #{out,jdbcType=VARCHAR,mode=OUT},
+        #{out_cur,jdbcType=CURSOR,  resultMap=mappingCodeMap3,mode=OUT})
+        }
+    </select>
+
+    <select id="getDataMonthlyDisbursalReportChart" parameterType="java.util.Map" statementType="CALLABLE">
+        { call SQLSERVER1.PRC_MAFC_DISBRPT_CHART4(
+        #{date, jdbcType=VARCHAR,mode=IN},
+        #{out,jdbcType=VARCHAR,mode=OUT},
+        #{out_cur,jdbcType=CURSOR,  resultMap=mappingCodeMap4,mode=OUT})
+        }
+    </select>
+</mapper>

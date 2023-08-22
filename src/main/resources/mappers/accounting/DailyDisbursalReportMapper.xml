@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dou.accounting.mappers.DailyDisbursalReportMapper">
+
+    <resultMap type="com.dou.accounting.models.DailyDisbursalReportModel" id="mappingCodeMap">
+        <result property="logDt" column="LOG_DATE"/>
+        <result property="product" column="PRODUCT"/>
+        <result property="countApp" column="COUNT_APP"/>
+        <result property="includedInsAmt" column="INCLUDED_INS_AMT"/>
+        <result property="notInsAmt" column="NOT_INS_AMT"/>
+        <result property="insAmt" column="INS_AMT"/>
+        <result property="accumApp" column="ACCUM_APP"/>
+        <result property="accumAmt" column="ACCUM_AMT"/>
+    </resultMap>
+
+    <select id="getDataDetailDisbursalReport" parameterType="java.util.Map" statementType="CALLABLE">
+        { call SQLSERVER1.PRC_MAFC_DISBRPT_VIEW3(
+        #{date, jdbcType=VARCHAR,mode=IN},
+        #{out,jdbcType=VARCHAR,mode=OUT},
+        #{out_cur,jdbcType=CURSOR,  resultMap=mappingCodeMap,mode=OUT})
+        }
+    </select>
+</mapper>

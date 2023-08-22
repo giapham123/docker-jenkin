@@ -1,78 +1,77 @@
 <template>
-  <v-app id="register" class="dark">
-    <v-content class="home-app-wrapper">
-      <v-container fluid fill-height>
-        <v-layout align-center justify-center>
-          <v-flex xs12 sm8 md4 lg4>
-            <v-card class="elevation-12">
-              <v-toolbar dark color="#009688">
-                <v-toolbar-title>Register</v-toolbar-title>
-              </v-toolbar>
-              <v-card-text>
-                <v-form ref="form" lazy-validation>
-                  <v-text-field
-                    ref="username"
-                    v-model="user.username"
-                    :rules="usernameRules"
-                    prepend-icon="account_circle"
-                    label="User Name"
-                    required
-                    autofocus
-                    v-on:keyup.13="subRegister"
-                  />
-                  <v-text-field
-                    ref="password"
-                    v-model="user.password"
-                    :rules="passwordRules"
-                    type="password"
-                    label="Password"
-                    prepend-icon="lock"
-                    required
-                    v-on:keyup.13="subRegister"
-                  />
-                  <v-text-field
-                    ref="confirmpassword"
-                    v-model="user.confirmpassword"
-                    :rules="confirmpasswordRules"
-                    type="password"
-                    label="Confirm Password"
-                    prepend-icon="lock"
-                    required
-                    v-on:keyup.13="subRegister"
-                  />
-                  <v-text-field
-                    ref="myfullname"
-                    v-model="user.myFullName"
-                    :rules="myFullNameRules"
-                    prepend-icon="person"
-                    label="My Full Name"
-                    required
-                    v-on:keyup.13="subRegister"
-                  />
-                  <v-text-field
-                    ref="mafccode"
-                    v-model="user.mafcCode"
-                    :rules="mafcCodeRules"
-                    prepend-icon="code"
-                    label="MAFC Code"
-                    required
-                    v-on:keyup.13="subRegister"
-                  />
-                  <v-combobox
-                    :rules="officeRules"
-                    prepend-icon="account_balance"
-                    label="Office"
-                    required
-                    v-on:keyup.13="subRegister"
-                  />
-                  <v-combobox
-                    :rules="groupRules"
-                    prepend-icon="group"
-                    label="Group"
-                    required
-                    v-on:keyup.13="subRegister"
-                  />
-                  <!-- <v-text-field
+  <v-content class="home-app-wrapper">
+    <v-container fluid fill-height>
+      <v-layout align-center justify-center>
+        <v-flex xs12 sm8 md4 lg4>
+          <v-card class="elevation-12">
+            <v-toolbar dark color="#009688">
+              <v-toolbar-title>Register</v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
+              <v-form ref="form" lazy-validation>
+                <v-text-field
+                  ref="username"
+                  v-model="user.username"
+                  :rules="usernameRules"
+                  prepend-icon="account_circle"
+                  label="User Name"
+                  required
+                  autofocus
+                  v-on:keyup.13="subRegister"
+                />
+                <v-text-field
+                  ref="password"
+                  v-model="user.password"
+                  :rules="passwordRules"
+                  type="password"
+                  label="Password"
+                  prepend-icon="lock"
+                  required
+                  v-on:keyup.13="subRegister"
+                />
+                <v-text-field
+                  ref="confirmpassword"
+                  v-model="user.confirmpassword"
+                  :rules="confirmpasswordRules"
+                  type="password"
+                  label="Confirm Password"
+                  prepend-icon="lock"
+                  required
+                  v-on:keyup.13="subRegister"
+                />
+                <v-text-field
+                  ref="myfullname"
+                  v-model="user.myFullName"
+                  :rules="myFullNameRules"
+                  prepend-icon="person"
+                  label="My Full Name"
+                  required
+                  v-on:keyup.13="subRegister"
+                />
+                <v-text-field
+                  ref="mafccode"
+                  v-model="user.mafcCode"
+                  :rules="mafcCodeRules"
+                  prepend-icon="code"
+                  label="MAFC Code"
+                  required
+                  v-on:keyup.13="subRegister"
+                />
+                <v-combobox
+                  :rules="officeRules"
+                  prepend-icon="account_balance"
+                  label="Office"
+                  required
+                  v-on:keyup.13="subRegister"
+                />
+                <v-combobox
+                  :rules="groupRules"
+                  prepend-icon="group"
+                  label="Group"
+                  required
+                  v-on:keyup.13="subRegister"
+                />
+                <!-- <v-text-field
                     ref="username"
                     v-model="user.username"
                     :rules="emailRule"
@@ -82,26 +81,25 @@
                     required
                     autofocus
                     v-on:keyup.13="subRegister"/> -->
-                  <v-layout wrap>
-                    <v-flex>
-                      <v-btn class="btn_ui" @click="subRegister">
-                        Register
-                      </v-btn>
-                    </v-flex>
-                    <v-flex style="text-align: right;">
-                      <v-btn right class="btn_ui" @click="btnLoginClick">
-                        Login
-                      </v-btn>
-                    </v-flex>
-                  </v-layout>
-                </v-form>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-content>
-  </v-app>
+                <v-layout wrap>
+                  <v-flex>
+                    <v-btn class="btn_ui" @click="subRegister">
+                      Register
+                    </v-btn>
+                  </v-flex>
+                  <v-flex style="text-align: right;">
+                    <v-btn right class="btn_ui" @click="btnLoginClick">
+                      Login
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-form>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-content>
 </template>
 
 <script>

@@ -15,12 +15,15 @@
       v-model="show"
       :label="label"
       :prepend-icon="icon"
+      :disabled="disabledDate"
       readonly
     />
     <v-date-picker
       v-model="picker"
       :allowed-dates="allowedDate"
       :color="color"
+      :disabled="disabledParam"
+      :min="minPicker"
       no-titl
       scrollable
       @input="pickDate"
@@ -31,12 +34,23 @@
 <script>
 export default {
   props: {
+    disabledDate: {
+      type: Boolean,
+      default: false
+    },
+    disabledParam: {
+      type: Boolean,
+      default: false
+    },
     value: {
       type: String,
       default: new Date().toLocaleDateString('en-US'),
       required: true
     },
-
+    minPicker: {
+      type: String,
+      default: null
+    },
     label: {
       type: String,
       default: '',

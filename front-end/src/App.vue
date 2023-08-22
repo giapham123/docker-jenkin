@@ -1,8 +1,8 @@
 <template>
   <div>
-    <loading :active.sync="loading" :can-cancel="false" color="#009688" />
-    <template v-if="$route.meta.requiresAuth">
-      <v-app id="inspire" class="app">
+    <v-app id="inspire" class="app">
+      <loading :active.sync="loading" :can-cancel="false" color="#009688" />
+      <template v-if="$route.meta.requiresAuth">
         <app-drawer class="app--drawer" />
         <app-toolbar class="app--toolbar" />
         <v-content>
@@ -12,26 +12,19 @@
         </v-content>
         <!-- Go to top -->
         <app-fab />
-      </v-app>
-    </template>
-    <template v-else>
-      <transition>
-        <keep-alive> <router-view /> </keep-alive>
-      </transition>
-    </template>
-    <v-snackbar
-      :timeout="5000"
-      :color="snackbar.color"
-      :multi-line="true"
-      v-model="show"
-      top
-      right
-    >
-      {{ snackbar.text }}
-      <v-btn dark flat icon @click.native="show = false">
-        <v-icon>close</v-icon>
-      </v-btn>
-    </v-snackbar>
+      </template>
+      <template v-else>
+        <transition>
+          <keep-alive> <router-view /> </keep-alive>
+        </transition>
+      </template>
+      <v-snackbar v-model="show" v-bind="snackbarConfig">
+        {{ snackbar.text }}
+        <v-btn dark flat icon @click.native="show = false">
+          <v-icon>close</v-icon>
+        </v-btn>
+      </v-snackbar>
+    </v-app>
   </div>
 </template>
 <script>
@@ -54,7 +47,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters('login', ['loading']),
+    ...mapGetters('global', ['snackbarConfig']),
     ...mapState('global', ['snackbar', 'loading']),
 
     show: {
@@ -69,7 +62,8 @@ export default {
 
   async created() {
     if (await this.validateToken()) {
-      this.$router.push({ path: '/' });
+      //Keep page when reload page
+      // this.$router.push({ path: '/' });
     } else {
       this.$router.push({ path: '/login' });
     }

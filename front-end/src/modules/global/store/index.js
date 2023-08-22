@@ -10,29 +10,37 @@ import {
 import * as getters from './getters';
 import * as actions from './actions';
 
-const DEFAULT_SNACKBAR = {
-  show: false,
-  color: '',
-  text: ''
-};
-
 const state = {
   drawerToggled: true,
   loading: false,
-  snackbar: { ...DEFAULT_SNACKBAR }
+  snackbar: { show: false }
 };
 
 const MSG_TYPE_COLORS = {
-  error: 'red',
-  success: 'green',
-  warning: 'orange'
+  ERROR: 'red',
+  SUCCESS: 'green',
+  WARNING: 'orange'
 };
 
-const showMsg = (state, { type, message }) => {
+const showMsgByOption = (state, { color, payload }) => {
+  let options = {
+    ...{ color, timeout: 5000, 'multi-line': true },
+    ...(payload.options || {})
+  };
+  let { x = 'right', y = 'top' } = options.position || {};
+
   state.snackbar = {
     show: true,
-    text: message,
-    color: MSG_TYPE_COLORS[type]
+    text: payload.message || payload,
+    options: {
+      ...options,
+      ...{
+        top: y === 'top',
+        bottom: y === 'bottom',
+        left: x === 'left',
+        right: x === 'right'
+      }
+    }
   };
 };
 
@@ -45,20 +53,20 @@ const mutations = {
     state.loading = flag;
   },
 
-  [SHOW_SUCCESS_MSG](state, message) {
-    showMsg(state, { type: 'success', message });
+  [SHOW_SUCCESS_MSG](state, payload) {
+    showMsgByOption(state, { color: MSG_TYPE_COLORS.SUCCESS, payload });
   },
 
-  [SHOW_ERROR_MSG](state, message) {
-    showMsg(state, { type: 'error', message });
+  [SHOW_ERROR_MSG](state, payload) {
+    showMsgByOption(state, { color: MSG_TYPE_COLORS.ERROR, payload });
   },
 
-  [SHOW_WARNING_MSG](state, message) {
-    showMsg(state, { type: 'warning', message });
+  [SHOW_WARNING_MSG](state, payload) {
+    showMsgByOption(state, { color: MSG_TYPE_COLORS.WARNING, payload });
   },
 
   [RESET_SNACKBAR](state) {
-    state.snackbar = { ...DEFAULT_SNACKBAR };
+    state.snackbar = { show: false };
   }
 };
 

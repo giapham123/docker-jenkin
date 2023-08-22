@@ -6,7 +6,7 @@
  * @Last Modified time: 2018-10-03 16:22:29
  */
 /* eslint-disable */
-import { SET_USER, AUTH_LOGOUT, SET_EXPIRES, AUTH_SUCCESS, AUTH_ERROR, SET_MESSAGE, USER_PERMISSION, NEED_CHANGE_PASS } from './types';
+import { CALL_SERVER_ACTION,RE_LOAD_PAGE,IS_LOG_OUT,SET_USER, AUTH_LOGOUT, SET_EXPIRES, AUTH_SUCCESS, AUTH_ERROR, SET_MESSAGE, USER_PERMISSION, NEED_CHANGE_PASS } from './types';
 import LoginService from 'modules/login/store/service';
 import ServiceToken from 'core/service';
 import router from 'router';
@@ -19,34 +19,62 @@ const service = new LoginService();
 export const login = async ({ commit }, payload) => {
   const resp = await service.login(payload);
   if(resp != null && resp.success){
-    let expired_minutes = resp.data.expires_in;
-    let expired_seconds = expired_minutes*60;
+    const userIsLogin = await service.checkUserIsLogin({
+      accountId: resp.data.user_info.account_id,
+      permissions:resp.data.user_permissions
+    });
+    if(!userIsLogin.data.data){
 
-    localStorage.removeItem(IS_DEFAULT_PASSWORD);
-    if (_.isBoolean(resp.data.is_default_password) && resp.data.is_default_password) {
-      localStorage.setItem(IS_DEFAULT_PASSWORD, true);
+      let expired_minutes = resp.data.expires_in;
+      let expired_seconds = expired_minutes*60;
+
+      localStorage.removeItem(IS_DEFAULT_PASSWORD);
+      if (_.isBoolean(resp.data.is_default_password) && resp.data.is_default_password) {
+        localStorage.setItem(IS_DEFAULT_PASSWORD, true);
+      }
+
+      localStorage.setItem(ACCESS_TOKEN_KEY, resp.data.access_token);
+      localStorage.setItem(EXPIRES_AT, Date.now());
+      localStorage.setItem(EXPIRES_IN, expired_seconds);
+      localStorage.setItem(RE_LOAD_PAGE, 'true');
+      localStorage.setItem(PERMISSIONS, JSON.stringify(resp.data.user_permissions));
+      localStorage.setItem(USER, JSON.stringify(resp.data.user_info));
+      localStorage.setItem(
+            'userId',
+            JSON.parse(localStorage.getItem('user')).account_id
+          );
+      ServiceToken.setToken(resp.data.access_token);
+
+      commit(SET_USER, resp.data.user_info);
+      commit(USER_PERMISSION, resp.data.user_permissions);
+
+      authSuccess({ commit }, resp.data.access_token);
+      setExpires({ commit });
+
+      router.push('/');  
+      await service.saveUserLogin({
+        accountId:payload.username,
+        permissions:resp.data.user_permissions
+      });
+    }else{
+      localStorage.removeItem(ACCESS_TOKEN_KEY);
+      localStorage.removeItem(EXPIRES_AT);
+      localStorage.removeItem(EXPIRES_IN);
+      localStorage.removeItem(PERMISSIONS);
+      localStorage.removeItem(USER);
+      localStorage.removeItem(RE_LOAD_PAGE);
+      ServiceToken.removeToken();
+      commit(AUTH_ERROR, false);
+      commit(SET_MESSAGE, userIsLogin.data.message);
     }
 
-    localStorage.setItem(ACCESS_TOKEN_KEY, resp.data.access_token);
-    localStorage.setItem(EXPIRES_AT, Date.now());
-    localStorage.setItem(EXPIRES_IN, expired_seconds);
-    localStorage.setItem(PERMISSIONS, JSON.stringify(resp.data.user_permissions));
-    localStorage.setItem(USER, JSON.stringify(resp.data.user_info));
-    ServiceToken.setToken(resp.data.access_token);
-
-    commit(SET_USER, resp.data.user_info);
-    commit(USER_PERMISSION, resp.data.user_permissions);
-
-    authSuccess({ commit }, resp.data.access_token);
-    setExpires({ commit });
-
-    router.push('/');    
   } else {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(EXPIRES_AT);
     localStorage.removeItem(EXPIRES_IN);
     localStorage.removeItem(PERMISSIONS);
     localStorage.removeItem(USER);
+    localStorage.removeItem(RE_LOAD_PAGE);
     ServiceToken.removeToken();
     commit(AUTH_ERROR, false);
     commit(SET_MESSAGE, resp == null ? 'Can not connect to server. Please check your network!' : resp.message);
@@ -60,6 +88,7 @@ export const authSuccess = ({ commit }, token ) => {
 export const setExpires = ({ commit }) => {
   const expires_at = parseInt(localStorage.getItem(EXPIRES_AT) || Date.now());
   const expires_in = parseInt(localStorage.getItem(EXPIRES_IN) || 3600);
+
   if (!expires_at || !expires_in) return router.push('/login');
   commit(SET_EXPIRES, { expires_in, expires_at });
   const expired = store.getters['login/expired'];
@@ -68,7 +97,9 @@ export const setExpires = ({ commit }) => {
   }
 };
 
-export const logout = ({ commit }) => {
+export const logout = async ({ commit }) => {
+  commit(IS_LOG_OUT,true)
+  // 
   return new Promise(resolve => {
     commit(AUTH_LOGOUT);
     localStorage.removeItem(ACCESS_TOKEN_KEY);
@@ -78,6 +109,8 @@ export const logout = ({ commit }) => {
     localStorage.removeItem(PERMISSIONS);
     localStorage.removeItem(USER);
     ServiceToken.removeToken();
+    // localStorage.removeItem('countLogin');
+    localStorage.removeItem(RE_LOAD_PAGE);
     resolve();
   });
 };
@@ -149,4 +182,27 @@ export const needChangePassword = async ({ commit }, payload) => {
   if(_.isBoolean(payload)) {
     commit(NEED_CHANGE_PASS, payload);
   }
+};
+export const removeUserLogin = async (dispatch, param) => {
+  const resp = await service.removeUserLogin(param);
+  return resp.data
+};
+
+export const checkUserIsLogin = async (dispatch, payload) => {
+  const resp = await service.checkUserIsLogin(payload);
+  return resp.data
+};
+
+export const updateTime = async (dispatch, payload) => {
+  const resp = await service.updateTime(payload);
+  return resp.data
+};
+
+export const updateStateCallServer = ({ commit }, payload) => {
+    commit(CALL_SERVER_ACTION, payload);
+};
+
+export const getKey = async (dispatch) => {
+  const resp = await service.getKey();
+  return resp.data
 };
