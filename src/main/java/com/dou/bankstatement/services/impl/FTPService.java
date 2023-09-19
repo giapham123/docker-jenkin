@@ -25,6 +25,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
@@ -1419,7 +1420,7 @@ public class FTPService implements FTPServiceInterface {
 
                 if(ftpFilePath.split("\\.")[1].equals("xlsx"))
                 {
-                    File file = new File("C:\\Users\\MAFC4568\\Desktop\\Desktop\\MOMOAPP_20230816.xlsx");
+                    File file = ResourceUtils.getFile("classpath:MOMOAPP_20230816.xlsx");
                     InputStream inputStream1 = new FileInputStream(file);
                     XSSFWorkbook workbook = new XSSFWorkbook(inputStream1);
 //                    XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
