@@ -1,5 +1,6 @@
 package com.dou.bankstatement.services.impl;
 
+import com.dou.adm.configuration.ResourceConfigurations;
 import com.dou.adm.shared.CommonStrings;
 import com.dou.adm.shared.ResponseObject;
 import com.dou.bankstatement.mappers.FTPMapper;
@@ -27,15 +28,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -63,6 +66,20 @@ public class FTPService implements FTPServiceInterface {
 
     @Value("${ftp.server.auth.password}")
     private String _mainPassword;
+
+    @Autowired
+    private ResourceConfigurations configurations;
+
+    public static HttpServletRequest getCurrentRequest() {
+        try {
+            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+            if (requestAttributes instanceof ServletRequestAttributes)
+                return ((ServletRequestAttributes) requestAttributes).getRequest();
+        } catch (Exception e) {
+            // Ignore case
+        }
+        return null;
+    }
 
     DateTimeFormatter _dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -1200,8 +1217,31 @@ public class FTPService implements FTPServiceInterface {
         return result;
     }
 
-    public String collectorTransaction(String ftpFilePath)
-    {
+    public String collectorTransaction(String ftpFilePath) throws IOException {
+        connectFTPServer();
+        Path storage =  configurations.getReportStorage(getCurrentRequest());
+        String remoteFile2 = ftpFilePath;
+        File downloadFile2 = new File(storage.toString()+"/"+ftpFilePath.split("/")[2]);
+        OutputStream outputStream2 = new BufferedOutputStream(new FileOutputStream(downloadFile2));
+        InputStream inputStream1 = _ftpClient.retrieveFileStream(remoteFile2);
+//        String remoteFile1 = ftpFilePath;
+//        File downloadFile1 = new File(storage.toString()+"/MOMOAPP_20230816.xlsx");
+//        OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(downloadFile1));
+//        boolean success = _ftpClient.retrieveFile(remoteFile1, outputStream1);
+        byte[] bytesArray = new byte[4096];
+        int bytesRead = -1;
+        while ((bytesRead = inputStream1.read(bytesArray)) != -1) {
+            outputStream2.write(bytesArray, 0, bytesRead);
+        }
+
+        Boolean success = _ftpClient.completePendingCommand();
+        if (success) {
+            System.out.println("File #2 has been downloaded successfully.");
+        }
+        outputStream2.close();
+        inputStream1.close();
+        String aaa = storage.resolve(ftpFilePath.split("/")[2]).toString();
+        FileInputStream inputS = new FileInputStream(aaa);
         String result = "";
         InputStream inputStream = null;
         List<SapCLEPayModel> sapCLEPayModelList = new ArrayList<>();
@@ -1420,9 +1460,9 @@ public class FTPService implements FTPServiceInterface {
 
                 if(ftpFilePath.split("\\.")[1].equals("xlsx"))
                 {
-                    File file = ResourceUtils.getFile("classpath:MOMOAPP_20230816.xlsx");
-                    InputStream inputStream1 = new FileInputStream(file);
-                    XSSFWorkbook workbook = new XSSFWorkbook(inputStream1);
+                    File file = ResourceUtils.getFile("classpath:"+ftpFilePath.split("/")[2]);
+//                    InputStream inputStream1 = new FileInputStream(inputS);
+                    XSSFWorkbook workbook = new XSSFWorkbook(inputS);
 //                    XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
                     XSSFSheet worksheet = workbook.getSheetAt(0);
                     worksheet.addIgnoredErrors(new CellRangeAddress(0,9999,0,9999), IgnoredErrorType.NUMBER_STORED_AS_TEXT);
