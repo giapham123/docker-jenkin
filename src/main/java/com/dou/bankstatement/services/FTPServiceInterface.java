@@ -5,6 +5,7 @@ import com.dou.bankstatement.models.BankStatementModel;
 import jxl.read.biff.BiffException;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public interface FTPServiceInterface {
@@ -16,7 +17,7 @@ public interface FTPServiceInterface {
     boolean CopyFileFTP(String path);
     boolean copyFile_collectorTransaction(String path);
     ResponseObject bankStatement(BankStatementModel model);
-    String collectorTransaction(String ftpFilePath) throws IOException, BiffException;
+    String collectorTransaction(String ftpFilePath) throws IOException, BiffException, URISyntaxException;
     ResponseObject procSyncColl(String collectorName);
     ResponseObject procDelColl(String collectorName, String fileName);
 }

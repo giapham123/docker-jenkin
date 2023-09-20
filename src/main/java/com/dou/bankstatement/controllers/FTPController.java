@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ public class FTPController {
     }
 
     @GetMapping("/collectorTransaction")
-    private ResponseObject collectorTransaction() throws IOException, BiffException {
+    private ResponseObject collectorTransaction() throws IOException, BiffException, URISyntaxException {
         ResponseObject obj = new ResponseObject();
         List<String> list = new ArrayList<>();
 

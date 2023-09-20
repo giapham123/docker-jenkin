@@ -32,10 +32,14 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -1217,11 +1221,16 @@ public class FTPService implements FTPServiceInterface {
         return result;
     }
 
-    public String collectorTransaction(String ftpFilePath) throws IOException {
+    public String collectorTransaction(String ftpFilePath) throws IOException, URISyntaxException {
         connectFTPServer();
         Path storage =  configurations.getReportStorage(getCurrentRequest());
         String remoteFile2 = ftpFilePath;
         File downloadFile2 = new File(storage.toString()+"/"+ftpFilePath.split("/")[2]);
+//        Resource file = storageService.loadAsResource(filename, extraVariable)
+        final Path root = Paths.get("/uploads");
+//        File downloadFile2 = new File(String.valueOf(root.resolve(ftpFilePath.split("/")[2])));
+
+
         OutputStream outputStream2 = new BufferedOutputStream(new FileOutputStream(downloadFile2));
         InputStream inputStream1 = _ftpClient.retrieveFileStream(remoteFile2);
 //        String remoteFile1 = ftpFilePath;
@@ -1241,7 +1250,13 @@ public class FTPService implements FTPServiceInterface {
         outputStream2.close();
         inputStream1.close();
         String aaa = storage.resolve(ftpFilePath.split("/")[2]).toString();
-        FileInputStream inputS = new FileInputStream(aaa);
+
+        String uploadDir = "./product-photos/";
+        byte[] bytes = aaa.getBytes();
+        Path path = Paths.get(uploadDir + ftpFilePath.split("/")[2]);
+        Files.write(path, bytes);
+        FileInputStream inputS = new FileInputStream(path.toFile().getAbsolutePath());
+        //////
         String result = "";
         InputStream inputStream = null;
         List<SapCLEPayModel> sapCLEPayModelList = new ArrayList<>();

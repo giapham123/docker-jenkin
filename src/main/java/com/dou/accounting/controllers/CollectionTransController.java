@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class CollectionTransController {
     }
     SigProcess getTrans = SigProcess.getInstance();
     @GetMapping("get-transactions")
-    public ResponseObject getTransactions() throws IOException, BiffException {
+    public ResponseObject getTransactions() throws IOException, BiffException, URISyntaxException {
         ResponseObject obj = new ResponseObject();
         if(getTrans.getIsGetTrans()){
             obj.setSuccess(false);
