@@ -1220,7 +1220,7 @@ public class FTPService implements FTPServiceInterface {
         }
         return result;
     }
-
+    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
     public String collectorTransaction(String ftpFilePath) throws IOException, URISyntaxException {
         connectFTPServer();
         Path storage =  configurations.getReportStorage(getCurrentRequest());
@@ -1250,10 +1250,9 @@ public class FTPService implements FTPServiceInterface {
         outputStream2.close();
         inputStream1.close();
         String aaa = storage.resolve(ftpFilePath.split("/")[2]).toString();
-
         String uploadDir = "./product-photos/";
         byte[] bytes = aaa.getBytes();
-        Path path = Paths.get(uploadDir + ftpFilePath.split("/")[2]);
+        Path path = Paths.get(UPLOAD_DIRECTORY + ftpFilePath.split("/")[2]);
         Files.write(path, bytes);
         FileInputStream inputS = new FileInputStream(path.toFile().getAbsolutePath());
         //////
