@@ -1220,7 +1220,7 @@ public class FTPService implements FTPServiceInterface {
         }
         return result;
     }
-    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
+    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/";
     public String collectorTransaction(String ftpFilePath) throws IOException, URISyntaxException {
         connectFTPServer();
         Path storage =  configurations.getReportStorage(getCurrentRequest());
